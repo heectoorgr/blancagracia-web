@@ -73,32 +73,44 @@
       "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
     }
   ],
-  "gallery": [
-    {
-      "image": "images/collage /Blanca_Color-3.jpg",
-      "alt": "Blanca Graciá, fotografía en color 3"
-    },
-    {
-      "image": "images/collage /Blanca_Color-6.jpg",
-      "alt": "Blanca Graciá, fotografía en color 6"
-    },
-    {
-      "image": "images/collage /Blanca_Color-12.jpg",
-      "alt": "Blanca Graciá, fotografía en color 12"
-    },
-    {
-      "image": "images/collage /Blanca_Color-11.jpg",
-      "alt": "Blanca Graciá, fotografía en color 11"
-    },
-    {
-      "image": "images/esta-tambien.jpeg",
-      "alt": "Blanca Graciá en una actuación"
-    },
-    {
-      "image": "images/Example02.jpg",
-      "alt": "Blanca Graciá al piano"
-    }
-  ],
+  "gallery": {
+    "desktop": [
+      {
+        "image": "images/Example01.jpg",
+        "alt": "Example 01"
+      },
+      {
+        "image": "images/Example02.jpg",
+        "alt": "Example 02"
+      }
+    ],
+    "mobile": [
+      {
+        "image": "images/collage /Blanca_Color-3.jpg",
+        "alt": "Blanca Graciá, fotografía en color 3"
+      },
+      {
+        "image": "images/collage /Blanca_Color-6.jpg",
+        "alt": "Blanca Graciá, fotografía en color 6"
+      },
+      {
+        "image": "images/collage /Blanca_Color-12.jpg",
+        "alt": "Blanca Graciá, fotografía en color 12"
+      },
+      {
+        "image": "images/collage /Blanca_Color-11.jpg",
+        "alt": "Blanca Graciá, fotografía en color 11"
+      },
+      {
+        "image": "images/esta-tambien.jpeg",
+        "alt": "Blanca Graciá en una actuación"
+      },
+      {
+        "image": "images/Example02.jpg",
+        "alt": "Blanca Graciá al piano"
+      }
+    ]
+  },
   "contact": {
     "intro": "¿Tienes una idea, una propuesta o simplemente quieres saludar? Puedes escribirme mediante este formulario.",
     "email": "gr_blanca@hotmail.es"

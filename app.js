@@ -389,7 +389,7 @@ const auditionsGrid = document.querySelector('#auditions-section .auditions-grid
 if (auditionsGrid) {
   auditionsGrid.innerHTML = auditions.map((item, index) => `<a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg" alt="Ver ${item.title} en YouTube"><span>${item.title || `Audición ${index + 1}`}</span></a>`).join('');
 }
-const defaultGalleryPhotos = [
+const defaultGalleryMobile = [
   { image: 'images/collage /Blanca_Color-3.jpg', alt: 'Blanca Graciá, fotografía en color 3' },
   { image: 'images/collage /Blanca_Color-6.jpg', alt: 'Blanca Graciá, fotografía en color 6' },
   { image: 'images/collage /Blanca_Color-12.jpg', alt: 'Blanca Graciá, fotografía en color 12' },
@@ -397,7 +397,14 @@ const defaultGalleryPhotos = [
   { image: 'images/esta-tambien.jpeg', alt: 'Blanca Graciá en una actuación' },
   { image: 'images/Example02.jpg', alt: 'Blanca Graciá al piano' }
 ];
-const galleryPhotos = siteContent.gallery?.length ? siteContent.gallery : defaultGalleryPhotos;
+const defaultGalleryDesktop = [
+  { image: 'images/Example01.jpg', alt: 'Example 01' },
+  { image: 'images/Example02.jpg', alt: 'Example 02' }
+];
+const isDesktopViewport = window.matchMedia('(min-width: 701px)').matches;
+const galleryPhotos = isDesktopViewport
+  ? (siteContent.gallery?.desktop?.length ? siteContent.gallery.desktop : defaultGalleryDesktop)
+  : (siteContent.gallery?.mobile?.length ? siteContent.gallery.mobile : defaultGalleryMobile);
 
 const gallerySection = document.createElement('section');
 gallerySection.className = 'content-panel gallery-section';
@@ -803,6 +810,7 @@ updateMobileSectionControls('inicio');
 if (siteContent.bio?.paragraphs?.length) translations.es.aboutBio = siteContent.bio.paragraphs;
 if (siteContent.contact?.intro) translations.es.contactIntro = siteContent.contact.intro;
 setLanguage('es');
+requestAnimationFrame(() => { document.querySelector('.site-shell')?.classList.add('is-ready'); });
 
 translations.es.auditionsTitle = 'Grabaciones';
 translations.en.auditionsTitle = 'Recordings';

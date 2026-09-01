@@ -1,0 +1,3 @@
+.site-shell{opacity:0;transition:opacity .5s ease}
+.site-shell.is-ready{opacity:1}
+@media(prefers-reduced-motion:reduce){.site-shell{transition:none;opacity:1}}
