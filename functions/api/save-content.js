@@ -1,42 +1,42 @@
-// Guarda cambios del panel directamente en GitHub, protegido por un código de acceso.
-// Variables de entorno necesarias en Netlify (Site configuration -> Environment variables):
-//   ADMIN_CODE   -> el código de acceso (por ejemplo 041297)
-//   GITHUB_TOKEN -> un token de acceso personal de GitHub con permiso de escritura sobre el repositorio
-//   GITHUB_REPO  -> "usuario/repositorio", por ejemplo "heectoorgr/blancagracia-web"
-
 const GITHUB_API = 'https://api.github.com';
 
-function base64Encode(str) {
-  return Buffer.from(str, 'utf-8').toString('base64');
+function jsonResponse(body, status = 200) {
+  return Response.json(body, { status });
 }
 
-async function githubRequest(path, options = {}) {
-  const token = process.env.GITHUB_TOKEN;
-  const res = await fetch(`${GITHUB_API}${path}`, {
+function base64Encode(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+async function githubRequest(env, path, options = {}) {
+  const response = await fetch(`${GITHUB_API}${path}`, {
     ...options,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${env.GITHUB_TOKEN}`,
       Accept: 'application/vnd.github+json',
       'Content-Type': 'application/json',
       ...options.headers
     }
   });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.message || `GitHub respondió ${res.status}`);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || `GitHub respondió ${response.status}`);
   }
   return data;
 }
 
-async function putFile(repo, branch, filePath, contentBase64, message) {
+async function putFile(env, repo, branch, filePath, contentBase64, message) {
   let sha;
   try {
-    const existing = await githubRequest(`/repos/${repo}/contents/${encodeURIComponent(filePath)}?ref=${branch}`);
+    const existing = await githubRequest(env, `/repos/${repo}/contents/${encodeURIComponent(filePath)}?ref=${branch}`);
     sha = existing.sha;
   } catch (error) {
-    sha = undefined; // el archivo no existe todavía
+    sha = undefined;
   }
-  return githubRequest(`/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+  return githubRequest(env, `/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
     method: 'PUT',
     body: JSON.stringify({
       message,
@@ -56,9 +56,9 @@ async function translateText(text, targetLanguage) {
     url.searchParams.set('tl', targetLanguage);
     url.searchParams.set('dt', 't');
     url.searchParams.set('q', text);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`El traductor respondió ${res.status}`);
-    const data = await res.json();
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`El traductor respondió ${response.status}`);
+    const data = await response.json();
     return Array.isArray(data?.[0]) ? data[0].map((part) => part[0]).join('') : text;
   } catch (error) {
     return text;
@@ -103,42 +103,36 @@ async function buildTranslations(content) {
   return translations;
 }
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Método no permitido' };
-  }
+export async function onRequestPost({ request, env }) {
+  const repo = env.GITHUB_REPO;
+  const branch = env.GITHUB_BRANCH || 'main';
 
-  const adminCode = process.env.ADMIN_CODE;
-  const repo = process.env.GITHUB_REPO;
-  const branch = process.env.GITHUB_BRANCH || 'main';
-
-  if (!adminCode || !process.env.GITHUB_TOKEN || !repo) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Faltan variables de entorno en Netlify (ADMIN_CODE, GITHUB_TOKEN, GITHUB_REPO).' }) };
+  if (!env.ADMIN_CODE || !env.GITHUB_TOKEN || !repo) {
+    return jsonResponse({ error: 'Faltan variables de entorno en Cloudflare (ADMIN_CODE, GITHUB_TOKEN, GITHUB_REPO).' }, 500);
   }
 
   let payload;
   try {
-    payload = JSON.parse(event.body || '{}');
+    payload = await request.json();
   } catch (error) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Petición inválida.' }) };
+    return jsonResponse({ error: 'Petición inválida.' }, 400);
   }
 
-  if (payload.code !== adminCode) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Código de acceso incorrecto.' }) };
+  if (payload.code !== env.ADMIN_CODE) {
+    return jsonResponse({ error: 'Código de acceso incorrecto.' }, 401);
   }
 
   try {
-    // Sube las imágenes nuevas primero (si las hay). El panel ya asigna la ruta final antes de enviarlas.
     for (const image of payload.images || []) {
-      await putFile(repo, branch, image.path, image.dataBase64, `Subir foto desde el panel: ${image.path}`);
+      await putFile(env, repo, branch, image.path, image.dataBase64, `Subir foto desde el panel: ${image.path}`);
     }
 
     payload.content.translations = await buildTranslations(payload.content);
     const contentString = JSON.stringify(payload.content, null, 2);
-    await putFile(repo, branch, 'content.json', base64Encode(contentString), 'Actualizar contenido desde el panel');
+    await putFile(env, repo, branch, 'content.json', base64Encode(contentString), 'Actualizar contenido desde el panel');
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    return jsonResponse({ ok: true });
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return jsonResponse({ error: error.message }, 500);
   }
-};
+}

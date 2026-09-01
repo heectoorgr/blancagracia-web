@@ -440,7 +440,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   statusEl.textContent = 'Guardando...';
   const { content, images } = collectContent();
   try {
-    const res = await fetch('/.netlify/functions/save-content', {
+    const res = await fetch('/api/save-content', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: ACCESS_CODE, content, images })
@@ -476,7 +476,7 @@ function registerFailedAttempt() {
   const count = parseInt(localStorage.getItem('adminFailedAttempts') || '0', 10) + 1;
   if (count >= 3) {
     localStorage.setItem('adminFailedAttempts', '0');
-    fetch('/.netlify/functions/send-alert', { method: 'POST' }).catch(() => {});
+    fetch('/api/send-alert', { method: 'POST' }).catch(() => {});
   } else {
     localStorage.setItem('adminFailedAttempts', String(count));
   }
@@ -491,7 +491,7 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
   }
   gateError.textContent = 'Comprobando...';
   try {
-    const res = await fetch('/.netlify/functions/verify-code', {
+    const res = await fetch('/api/verify-code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code })
