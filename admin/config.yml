@@ -9,7 +9,8 @@ backend:
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
-publish_mode: simple
+# Antes de publicar, cada cambio pasa por "Borradores" (puedes descartarlo si te equivocas).
+publish_mode: editorial_workflow
 locale: "es"
 
 collections:
