@@ -238,10 +238,12 @@ function addPreviousEntry(item = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'entry';
   wrap.innerHTML =
+    '<label>Enlace (opcional)</label><input type="url" class="f-link">' +
     '<label>Fecha</label><input type="text" class="f-date">' +
     '<label>Nombre del evento</label><input type="text" class="f-name">' +
     '<label>Lugar</label><input type="text" class="f-place">' +
     '<label>Descripción breve</label><textarea class="f-description"></textarea><span class="char-counter"></span>';
+  wrap.querySelector('.f-link').value = item.link || '';
   wrap.querySelector('.f-date').value = item.date || '';
   wrap.querySelector('.f-name').value = item.name || '';
   wrap.querySelector('.f-place').value = item.place || '';
@@ -314,6 +316,7 @@ function collectContent() {
     description: el.querySelector('.f-description').value
   }));
   const previous = [...document.querySelectorAll('#previousList .entry')].map((el) => ({
+    link: el.querySelector('.f-link').value,
     date: el.querySelector('.f-date').value,
     name: el.querySelector('.f-name').value,
     place: el.querySelector('.f-place').value,

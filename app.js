@@ -228,6 +228,7 @@ const translations = {
     role: 'Pianist, Répétiteur, Vocal Coach',
     galleryTitle: 'Gallery',
     scheduleHint: 'Take a look at my schedule',
+    moreInfo: 'More information',
     previousEventsTitle: 'Previous events',
     upcomingTitle: 'Upcoming',
     scheduleTitle: 'Schedule',
@@ -263,6 +264,7 @@ const translations = {
     role: 'Pianista, Repetidora y Coach Vocal',
     galleryTitle: 'Galería',
     scheduleHint: 'Mira mi agenda',
+    moreInfo: 'Más información',
     previousEventsTitle: 'Eventos anteriores',
     upcomingTitle: 'Próximamente',
     scheduleTitle: 'Agenda',
@@ -298,6 +300,7 @@ const translations = {
     role: 'Pianista, Repetidora i Coach Vocal',
     galleryTitle: 'Galeria',
     scheduleHint: 'Mira la meua agenda',
+    moreInfo: 'Més informació',
     previousEventsTitle: 'Esdeveniments anteriors',
     upcomingTitle: 'Pròximament',
     scheduleTitle: 'Agenda',
@@ -320,6 +323,25 @@ if (auditionsDot && auditionsSection && socialPanel) {
   socialPanel.append(auditionsSection);
   auditionsSection.hidden = false;
 }
+
+const getLocalizedContent = (language) => {
+  const translated = language === 'es' ? null : siteContent.translations?.[language];
+  return {
+    bio: {
+      ...siteContent.bio,
+      paragraphs: translated?.bio?.paragraphs || siteContent.bio?.paragraphs
+    },
+    agenda: {
+      ...siteContent.agenda,
+      upcoming: translated?.agenda?.upcoming || siteContent.agenda?.upcoming,
+      previous: translated?.agenda?.previous || siteContent.agenda?.previous
+    },
+    contact: {
+      ...siteContent.contact,
+      intro: translated?.contact?.intro || siteContent.contact?.intro
+    }
+  };
+};
 
 document.querySelector('[data-content="agenda"] .panel-kicker')?.remove();
 document.querySelector('[data-content="redes"] .panel-kicker')?.remove();
@@ -540,7 +562,11 @@ const defaultUpcoming = [
 const upcomingItems = siteContent.agenda?.upcoming?.length ? siteContent.agenda.upcoming : defaultUpcoming;
 const upcomingEvents = document.createElement('div');
 upcomingEvents.className = 'upcoming-events';
-upcomingEvents.innerHTML = upcomingItems.map((item) => `<article class="upcoming-event">${item.link ? `<a href="${item.link}" class="upcoming-event-link">Más información</a>` : ''}${item.type ? `<strong>${item.type}</strong>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
+const renderUpcomingEvents = (items, language = currentLanguage) => {
+  const moreInfo = translations[language]?.moreInfo || translations.es.moreInfo;
+  upcomingEvents.innerHTML = items.map((item) => `<article class="upcoming-event">${item.link ? `<a href="${item.link}" class="upcoming-event-link" target="_blank" rel="noopener noreferrer">${moreInfo}</a>` : ''}${item.type ? `<strong>${item.type}</strong>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
+};
+renderUpcomingEvents(upcomingItems);
 const upcomingSection = document.createElement('section');
 upcomingSection.className = 'upcoming-section';
 upcomingSection.append(upcomingTitle, upcomingEvents);
@@ -553,7 +579,12 @@ const defaultPrevious = [
 const previousItems = siteContent.agenda?.previous?.length ? siteContent.agenda.previous : defaultPrevious;
 const previousEvents = document.createElement('section');
 previousEvents.className = 'previous-events-card';
-previousEvents.innerHTML = `<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list">${previousItems.map((item) => `<article>${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('')}</div>`;
+previousEvents.innerHTML = '<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list"></div>';
+const renderPreviousEvents = (items, language = currentLanguage) => {
+  const moreInfo = translations[language]?.moreInfo || translations.es.moreInfo;
+  previousEvents.querySelector('.previous-events-list').innerHTML = items.map((item) => `<article>${item.link ? `<a href="${item.link}" class="upcoming-event-link" target="_blank" rel="noopener noreferrer">${moreInfo}</a>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
+};
+renderPreviousEvents(previousItems);
 scheduleHint.after(previousEvents);
 const calendarPreview = scheduleSection.querySelector('.full-calendar-link');
 calendarPreview.remove();
@@ -735,6 +766,7 @@ buttons.forEach((button) => {
 
 function setLanguage(language) {
   const copy = translations[language];
+  const localizedContent = getLocalizedContent(language);
   currentLanguage = language;
   document.documentElement.lang = language;
   const navLabels = {
@@ -764,14 +796,15 @@ function setLanguage(language) {
      if (panelHeading) panelHeading.textContent = copy.headings[panelIndex];
   });
   const about = document.querySelector('[data-content="sobre-mi"]');
-  about.querySelectorAll('.about-intro > p:not(.panel-kicker)').forEach((item, index) => { item.textContent = copy.aboutBio[index]; });
+  const aboutParagraphs = localizedContent.bio.paragraphs?.length ? localizedContent.bio.paragraphs : copy.aboutBio;
+  about.querySelectorAll('.about-intro > p:not(.panel-kicker)').forEach((item, index) => { item.textContent = aboutParagraphs[index] || ''; });
   const headerRole = document.querySelector('.header-role');
   if (headerRole) headerRole.textContent = copy.role;
   const agendaIntro = document.querySelector('[data-content="agenda"] > p:not(.panel-kicker)');
   if (agendaIntro) agendaIntro.textContent = copy.agendaIntro;
   document.querySelector('[data-content="redes"] > p:not(.panel-kicker)').textContent = copy.socialIntro;
   const contactIntro = document.querySelector('[data-content="contacto"] > p:not(.panel-kicker)');
-  if (contactIntro) contactIntro.textContent = copy.contactIntro;
+  if (contactIntro) contactIntro.textContent = localizedContent.contact.intro || copy.contactIntro;
   document.querySelectorAll('.contact-form label').forEach((label, index) => { label.firstChild.textContent = copy.labels[index]; });
   document.querySelectorAll('.contact-form input:not([type="hidden"]), .contact-form textarea').forEach((field, index) => { field.placeholder = copy.placeholders[index] || ''; });
   document.querySelector('.contact-form button').textContent = copy.send;
@@ -781,10 +814,12 @@ function setLanguage(language) {
   gallerySection.querySelector('.gallery-heading h3').textContent = galleryPageTwo.hidden ? copy.auditionsTitle : copy.galleryTitle;
   document.querySelectorAll('.schedule-hint').forEach((hint) => { hint.textContent = copy.scheduleHint; });
   upcomingTitle.textContent = copy.upcomingTitle;
+  renderUpcomingEvents(localizedContent.agenda.upcoming?.length ? localizedContent.agenda.upcoming : defaultUpcoming, language);
   document.querySelectorAll('.schedule-title-link').forEach((titleLink) => {
     if (titleLink.firstChild) titleLink.firstChild.textContent = copy.scheduleTitle;
   });
   document.querySelectorAll('.previous-events-card h4').forEach((title) => { title.textContent = copy.previousEventsTitle; });
+  renderPreviousEvents(localizedContent.agenda.previous?.length ? localizedContent.agenda.previous : defaultPrevious, language);
   document.querySelectorAll('.agenda-grid .agenda-card').forEach((card) => {
     card.querySelector('time').textContent = copy.agendaCards[0];
     card.querySelector('strong').textContent = copy.agendaCards[1];

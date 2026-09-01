@@ -39,6 +39,7 @@
     ],
     "previous": [
       {
+        "link": "https://www.example.com/",
         "date": "[FECHA]",
         "name": "[Nombre del evento]",
         "place": "[Lugar]",
