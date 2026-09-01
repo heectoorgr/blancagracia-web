@@ -26,7 +26,7 @@
   h2{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px;margin:36px 0 16px}
   section:first-of-type h2{margin-top:0}
   label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
-  input[type=text],input[type=email],input[type=url],textarea{width:100%;padding:10px;font:14px "DM Sans",sans-serif;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:#fff;color:var(--ink)}
+  input[type=text],input[type=email],input[type=url],select,textarea{width:100%;padding:10px;font:14px "DM Sans",sans-serif;border:1px solid var(--line);border-radius:6px;margin-bottom:10px;background:#fff;color:var(--ink)}
   textarea{min-height:70px;resize:vertical}
   .entry{border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px;background:#fff}
   .entry-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -46,7 +46,7 @@
     h2{font-size:13px;margin:28px 0 12px}
     .entry{padding:12px}
     .photo-preview{width:96px;height:96px}
-    input[type=text],input[type=email],input[type=url],textarea{font-size:16px}
+    input[type=text],input[type=email],input[type=url],select,textarea{font-size:16px}
     .save-bar{padding:12px 14px;flex-wrap:wrap}
     #status{width:100%}
   }
@@ -183,6 +183,21 @@ function attachCharacterLimit(textarea, max, counterEl) {
   update();
 }
 
+function setupEventLinkControls(wrap, item = {}) {
+  const display = item.linkDisplay || 'custom';
+  const linkTextInput = wrap.querySelector('.f-link-text');
+  const displaySelect = wrap.querySelector('.f-link-display');
+  wrap.querySelector('.f-link').value = item.link || '';
+  linkTextInput.value = item.linkText || '';
+  displaySelect.value = display === 'raw' ? 'raw' : 'custom';
+  const updateTextState = () => {
+    linkTextInput.disabled = displaySelect.value === 'raw';
+    linkTextInput.placeholder = displaySelect.value === 'raw' ? 'Se mostrará el link completo' : 'Ejemplo: Mira esto';
+  };
+  displaySelect.addEventListener('change', updateTextState);
+  updateTextState();
+}
+
 function refreshBioPhotoBadges() {
   const entries = [...document.querySelectorAll('#bioPhotos .entry')];
   const activeTab = document.querySelector('.bio-device-tab.active')?.dataset.device || 'pc';
@@ -220,11 +235,13 @@ function addUpcomingEntry(item = {}) {
   wrap.className = 'entry';
   wrap.innerHTML =
     '<label>Enlace (opcional)</label><input type="url" class="f-link">' +
+    '<label>Cómo mostrar el enlace</label><select class="f-link-display"><option value="custom">Cartel personalizado</option><option value="raw">Link en bruto subrayado</option></select>' +
+    '<label>Texto del cartel personalizado</label><input type="text" class="f-link-text">' +
     '<label>Tipo de trabajo</label><input type="text" class="f-type">' +
     '<label>Fecha o fechas</label><input type="text" class="f-date">' +
     '<label>Lugar</label><input type="text" class="f-place">' +
     '<label>Descripción</label><textarea class="f-description"></textarea><span class="char-counter"></span>';
-  wrap.querySelector('.f-link').value = item.link || '';
+  setupEventLinkControls(wrap, item);
   wrap.querySelector('.f-type').value = item.type || '';
   wrap.querySelector('.f-date').value = item.date || '';
   wrap.querySelector('.f-place').value = item.place || '';
@@ -239,11 +256,13 @@ function addPreviousEntry(item = {}) {
   wrap.className = 'entry';
   wrap.innerHTML =
     '<label>Enlace (opcional)</label><input type="url" class="f-link">' +
+    '<label>Cómo mostrar el enlace</label><select class="f-link-display"><option value="custom">Cartel personalizado</option><option value="raw">Link en bruto subrayado</option></select>' +
+    '<label>Texto del cartel personalizado</label><input type="text" class="f-link-text">' +
     '<label>Fecha</label><input type="text" class="f-date">' +
     '<label>Nombre del evento</label><input type="text" class="f-name">' +
     '<label>Lugar</label><input type="text" class="f-place">' +
     '<label>Descripción breve</label><textarea class="f-description"></textarea><span class="char-counter"></span>';
-  wrap.querySelector('.f-link').value = item.link || '';
+  setupEventLinkControls(wrap, item);
   wrap.querySelector('.f-date').value = item.date || '';
   wrap.querySelector('.f-name').value = item.name || '';
   wrap.querySelector('.f-place').value = item.place || '';
@@ -310,6 +329,8 @@ function collectContent() {
   const bioPhotos = [...document.querySelectorAll('#bioPhotos .entry')].map((el) => el.dataset.currentPath).filter(Boolean);
   const upcoming = [...document.querySelectorAll('#upcomingList .entry')].map((el) => ({
     link: el.querySelector('.f-link').value,
+    linkDisplay: el.querySelector('.f-link-display').value,
+    linkText: el.querySelector('.f-link-text').value,
     type: el.querySelector('.f-type').value,
     date: el.querySelector('.f-date').value,
     place: el.querySelector('.f-place').value,
@@ -317,6 +338,8 @@ function collectContent() {
   }));
   const previous = [...document.querySelectorAll('#previousList .entry')].map((el) => ({
     link: el.querySelector('.f-link').value,
+    linkDisplay: el.querySelector('.f-link-display').value,
+    linkText: el.querySelector('.f-link-text').value,
     date: el.querySelector('.f-date').value,
     name: el.querySelector('.f-name').value,
     place: el.querySelector('.f-place').value,

@@ -12,6 +12,7 @@ const getYouTubeId = (url) => {
   const match = (url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
   return match ? match[1] : null;
 };
+const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
 const homePanel = document.createElement('section');
 homePanel.className = 'content-panel home-panel';
@@ -562,9 +563,15 @@ const defaultUpcoming = [
 const upcomingItems = siteContent.agenda?.upcoming?.length ? siteContent.agenda.upcoming : defaultUpcoming;
 const upcomingEvents = document.createElement('div');
 upcomingEvents.className = 'upcoming-events';
+const eventLinkHTML = (item, language = currentLanguage) => {
+  if (!item.link) return '';
+  const label = item.linkDisplay === 'raw'
+    ? item.link
+    : (item.linkText || translations[language]?.moreInfo || translations.es.moreInfo);
+  return `<a href="${escapeHTML(item.link)}" class="upcoming-event-link" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">${escapeHTML(label)}</a>`;
+};
 const renderUpcomingEvents = (items, language = currentLanguage) => {
-  const moreInfo = translations[language]?.moreInfo || translations.es.moreInfo;
-  upcomingEvents.innerHTML = items.map((item) => `<article class="upcoming-event">${item.link ? `<a href="${item.link}" class="upcoming-event-link" target="_blank" rel="noopener noreferrer">${moreInfo}</a>` : ''}${item.type ? `<strong>${item.type}</strong>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
+  upcomingEvents.innerHTML = items.map((item) => `<article class="upcoming-event">${eventLinkHTML(item, language)}${item.type ? `<strong>${item.type}</strong>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
 };
 renderUpcomingEvents(upcomingItems);
 const upcomingSection = document.createElement('section');
@@ -581,8 +588,7 @@ const previousEvents = document.createElement('section');
 previousEvents.className = 'previous-events-card';
 previousEvents.innerHTML = '<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list"></div>';
 const renderPreviousEvents = (items, language = currentLanguage) => {
-  const moreInfo = translations[language]?.moreInfo || translations.es.moreInfo;
-  previousEvents.querySelector('.previous-events-list').innerHTML = items.map((item) => `<article>${item.link ? `<a href="${item.link}" class="upcoming-event-link" target="_blank" rel="noopener noreferrer">${moreInfo}</a>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
+  previousEvents.querySelector('.previous-events-list').innerHTML = items.map((item) => `<article>${eventLinkHTML(item, language)}${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
 };
 renderPreviousEvents(previousItems);
 scheduleHint.after(previousEvents);

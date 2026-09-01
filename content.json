@@ -40,6 +40,8 @@
     "previous": [
       {
         "link": "https://www.example.com/",
+        "linkDisplay": "custom",
+        "linkText": "Mira esto",
         "date": "[FECHA]",
         "name": "[Nombre del evento]",
         "place": "[Lugar]",

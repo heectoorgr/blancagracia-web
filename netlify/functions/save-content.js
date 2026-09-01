@@ -87,8 +87,8 @@ async function buildTranslations(content) {
         paragraphs: await Promise.all((content.bio?.paragraphs || []).map((paragraph) => translateText(paragraph, targetLanguage)))
       },
       agenda: {
-        upcoming: await translateEntries(content.agenda?.upcoming || [], targetLanguage, ['type', 'date', 'place', 'description']),
-        previous: await translateEntries(content.agenda?.previous || [], targetLanguage, ['date', 'name', 'place', 'description'])
+        upcoming: await translateEntries(content.agenda?.upcoming || [], targetLanguage, ['linkText', 'type', 'date', 'place', 'description']),
+        previous: await translateEntries(content.agenda?.previous || [], targetLanguage, ['linkText', 'date', 'name', 'place', 'description'])
       },
       contact: {
         intro: await translateText(content.contact?.intro || '', targetLanguage)
