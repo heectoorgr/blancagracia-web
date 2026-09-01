@@ -1,0 +1,1 @@
+.full-calendar-wrap{width:100%;margin:0 auto}.full-calendar{display:block;width:100%;height:clamp(720px,80vh,1000px);border:1px solid var(--line);background:#fff}.calendar-fallback{display:block;margin-top:14px;color:#fff;font:11px "Space Mono",monospace;text-align:right;text-decoration:underline}.calendar-fallback:hover{color:var(--accent)}

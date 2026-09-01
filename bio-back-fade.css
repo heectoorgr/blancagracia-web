@@ -1,0 +1,1 @@
+.panel-stage>.content-panel.panel-enter-back{animation:bio-back-fade-in .5s ease both!important}@keyframes bio-back-fade-in{from{opacity:0}to{opacity:1}}

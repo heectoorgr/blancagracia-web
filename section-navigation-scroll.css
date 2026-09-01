@@ -1,0 +1,44 @@
+.section-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  justify-content: safe center;
+  background: transparent;
+  transition: transform 2s ease, opacity 2s ease;
+}
+
+.section-nav.nav-hidden {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-shell {
+  margin: 0 auto;
+  padding-top: 0;
+}
+
+.site-header {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.profile-image {
+  display: block;
+  width: 100vw;
+  height: min(430px, 48vw);
+  object-fit: cover;
+  object-position: center;
+}
+
+.content-panel {
+  background: transparent !important;
+}
+
+.content-panel,
+.gallery-section {
+  scroll-margin-top: 68px;
+}

@@ -1,0 +1,1 @@
+.gallery-section.gallery-slide-in{animation:gallery-soft-in .45s ease both}.auditions-section.auditions-fade-in{animation:auditions-soft-in .45s ease both}@keyframes gallery-soft-in{from{opacity:.55}to{opacity:1}}@keyframes auditions-soft-in{from{opacity:.55}to{opacity:1}}

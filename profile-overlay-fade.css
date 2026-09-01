@@ -1,0 +1,1 @@
+.profile-overlay{transition:opacity .5s ease,transform .5s ease}.profile-overlay.is-fading-out{opacity:0!important}@media(max-width:700px){.profile-overlay{transition:opacity .5s ease!important}.profile-overlay.is-fading-out{opacity:0!important}}

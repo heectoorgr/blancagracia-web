@@ -1,0 +1,1 @@
+.site-header{display:block;padding:0;border-bottom:1px solid var(--ink);background:var(--paper)}.profile-image{display:block;width:100%;height:min(430px,48vw);object-fit:cover;object-position:center}.site-header + .section-nav{margin-top:0}@media(max-width:700px){.profile-image{height:58vw;min-height:220px;object-position:center}}

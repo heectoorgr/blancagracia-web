@@ -1,0 +1,1 @@
+.gallery-grid a:not(.audition-link){pointer-events:none;cursor:default}.gallery-grid img{pointer-events:none;user-select:none;-webkit-user-drag:none}.gallery-grid .audition-link{pointer-events:auto;cursor:pointer}

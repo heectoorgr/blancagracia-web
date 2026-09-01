@@ -1,0 +1,100 @@
+:root{--ink:#21130f;--muted:#866b5d;--accent:#c86545;--accent-soft:#ead2bd;--line:#d8b9a4;--paper:#fbf2e8;--bg:#160d0b}
+html{background:var(--bg)}
+body{color:var(--ink);background:radial-gradient(circle at 50% 0%,#563024 0%,#281612 42%,#100908 100%)}
+.site-header{background:#050403;border-bottom-color:#3b2922}
+.site-header:after{background:linear-gradient(to bottom,rgba(5,4,3,0) 0%,rgba(5,4,3,.12) 48%,rgba(5,4,3,.78) 86%,#050403 100%)}
+.profile-image{width:100%;height:auto;min-height:0;object-fit:contain;object-position:center top;background:#050403;filter:saturate(.88) contrast(1.06)}
+.section-nav{background:rgba(24,12,9,.96);border-color:rgba(234,210,189,.22)}
+.section-nav button{color:#f7e8d9}
+.section-nav button:hover,.section-nav button:focus-visible,.section-nav button.active{background:#9f4d35;color:#fff7ef}
+.content-panel{background:#050403;border-color:#3b2922;color:#f4e7dc}
+.content-panel h2{color:#f4e7dc}
+.panel-kicker{color:#c98368}
+.content-panel>p{color:#d3bdb0}
+.about-note,.agenda-card,.social-link,.opinion,.contact-card{background:#100b09;border-color:#4e352b}
+.about-note strong,.agenda-card strong,.social-link strong,.contact-card strong{color:#edb39a}
+.agenda-card time,.agenda-card span,.social-link span,.contact-card span,.opinion cite{color:#b89584}
+.contact-form input,.contact-form textarea{background:#100b09;border-color:#68483a;color:#f4e7dc}
+.contact-form input:focus,.contact-form textarea:focus{border-color:#c86545;box-shadow:0 0 0 3px rgba(200,101,69,.18)}
+.contact-form button{background:#8e4935;color:#fff7ef}
+.contact-form button:hover{background:#c86545}
+.home-panel,.about-intro,.about-photo-reveal{background:#050403!important}
+.home-panel:before{background:linear-gradient(to bottom,rgba(5,4,3,.94) 0%,rgba(5,4,3,.58) 18%,rgba(5,4,3,0) 38%,rgba(5,4,3,.66) 84%,#050403 100%),linear-gradient(to right,#050403 0%,rgba(5,4,3,.7) 8%,rgba(5,4,3,0) 26%,rgba(5,4,3,0) 74%,rgba(5,4,3,.7) 92%,#050403 100%)!important}
+.home-panel .home-role,.home-panel .home-jump{color:#f8e5d5;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.home-panel .home-jump{border-color:#d48662;background:rgba(33,19,15,.62)}
+.home-panel .home-jump:hover{background:#a6533b}
+.language-switcher button{background:#f6e5d5;color:#6f3527;border-color:#cda991}
+.language-switcher button.active,.language-switcher button:hover{background:#c86545;color:#fff7ef}
+.gallery-section,.gallery-panel{background:#050403!important}
+.panel-stage{background:#050403!important}
+.content-panel:not(.home-panel){position:relative;isolation:isolate;background:#050403!important}
+.content-panel:not(.home-panel):before,.content-panel:not(.home-panel):after{content:"";position:absolute;right:0;left:0;height:120px;z-index:0;pointer-events:none}
+.content-panel:not(.home-panel):before{top:0;background:linear-gradient(to bottom,#050403,rgba(5,4,3,0))}
+.content-panel:not(.home-panel):after{bottom:0;background:linear-gradient(to top,#050403,rgba(5,4,3,0))}
+.about-intro:before{background:linear-gradient(to bottom,rgba(5,4,3,0),rgba(5,4,3,.72),#050403)!important}
+.content-panel,.content-panel section,.content-panel article,.content-panel .past-events,.content-panel .past-events-list{background:#050403!important}
+.content-panel h3,.content-panel strong,.content-panel b{color:#edb39a}
+.content-panel a{color:#f0c5ad}
+.content-panel a:hover{color:#fff7ef}
+.content-panel time,.content-panel span,.content-panel cite{color:#b89584}
+.content-panel blockquote{color:#d8c1b5;border-color:#4e352b}
+.content-panel label{color:#d8c1b5}
+.content-panel input,.content-panel textarea,.content-panel select{background:#100b09;border-color:#68483a;color:#f4e7dc}
+.content-panel input::placeholder,.content-panel textarea::placeholder{color:#8d7062}
+.content-panel button{border-color:#68483a}
+.agenda-list div,.agenda-card,.social-link,.opinion{background:#100b09!important;border-color:#4e352b}
+.agenda-list strong{color:#edb39a!important}
+.agenda-list span{color:#b89584!important}
+.gallery-grid a,.gallery-grid figure{background:#100b09;border-color:#4e352b}
+.social-logo{fill:#edb39a;stroke:#edb39a}
+.social-link:hover .social-logo{fill:#c86545;stroke:#c86545}
+.section-nav button,.content-panel h2,.content-panel h3,.content-panel p,.content-panel strong,.content-panel b,.content-panel span,.content-panel time,.content-panel cite,.content-panel blockquote,.content-panel label,.content-panel a{color:#fff!important}
+.content-panel input,.content-panel textarea,.content-panel select{color:#fff!important}
+.content-panel input::placeholder,.content-panel textarea::placeholder{color:rgba(255,255,255,.72)!important}
+.language-switcher button{color:#fff}
+[data-content="redes"] h2,[data-content="redes"] p,[data-content="redes"] h3,[data-content="redes"] strong,[data-content="redes"] span,[data-content="redes"] a,[data-content="redes"] cite{color:#fff!important}
+[data-content="contacto"] h2,[data-content="contacto"] p,[data-content="contacto"] h3,[data-content="contacto"] strong,[data-content="contacto"] span,[data-content="contacto"] label,[data-content="contacto"] input,[data-content="contacto"] textarea,[data-content="contacto"] button{color:#fff!important}
+[data-content="contacto"] input::placeholder,[data-content="contacto"] textarea::placeholder{color:rgba(255,255,255,.72)!important}
+[data-content="redes"] .social-grid{gap:18px}
+[data-content="redes"] .social-link{background:linear-gradient(145deg,#f9f5f2 0%,#f2ece5 42%,#e4d8cc 100%)!important;border:1px solid rgba(19,12,9,.12)!important;border-radius:18px!important;padding:18px 16px!important;box-shadow:0 10px 22px rgba(0,0,0,.16)!important;color:#050403!important;transition:none!important}
+[data-content="redes"] .social-link strong,[data-content="redes"] .social-link span,[data-content="redes"] .social-link *{color:#050403!important}
+[data-content="redes"] .social-link:hover{background:linear-gradient(145deg,#ffffff 0%,#efe4d9 38%,#dcc8b8 100%)!important}
+[data-content="redes"] .social-logo{display:block;width:42px;height:42px;overflow:visible}
+[data-content="redes"] .social-logo rect,[data-content="redes"] .social-logo circle,[data-content="redes"] .social-logo path,[data-content="redes"] .social-logo text{vector-effect:non-scaling-stroke}
+[data-content="redes"] .social-logo rect,[data-content="redes"] .social-logo circle,[data-content="redes"] .social-logo .brand-ring,[data-content="redes"] .youtube-logo rect{fill:#050403!important;stroke:#050403!important}
+[data-content="redes"] .linkedin-logo text,[data-content="redes"] .facebook-logo text,[data-content="redes"] .youtube-logo .yt-triangle,[data-content="redes"] .instagram-logo .brand-ring,[data-content="redes"] .instagram-logo .brand-dot{fill:#fff!important;stroke:#fff!important}
+[data-content="redes"] .instagram-logo .brand-ring{fill:none!important;stroke:#fff!important;stroke-width:1.3}
+[data-content="redes"] .instagram-logo .brand-dot{fill:#fff!important;stroke:#fff!important}
+[data-content="redes"] .youtube-logo .yt-triangle{fill:#fff!important;stroke:#fff!important}
+.content-panel[data-content="redes"]:before,.content-panel[data-content="redes"]:after{height:42px}
+.content-panel[data-content="redes"]:before{background:linear-gradient(to bottom,#050403,rgba(5,4,3,0))}
+.content-panel[data-content="redes"]:after{background:linear-gradient(to top,#050403,rgba(5,4,3,0))}
+.content-panel[data-content="contacto"]:before,.content-panel[data-content="contacto"]:after{height:42px}
+.content-panel[data-content="contacto"]:before{background:linear-gradient(to bottom,#050403,rgba(5,4,3,0))}
+.content-panel[data-content="contacto"]:after{background:linear-gradient(to top,#050403,rgba(5,4,3,0))}
+.content-panel[data-content="contacto"]:before,.content-panel[data-content="contacto"]:after{display:none!important}
+.about-note,.agenda-card,.agenda-list div,.social-link,.opinion,.past-events-list article,.gallery-grid a,.gallery-grid figure{background:linear-gradient(145deg,#eee5da 0%,#c9b8aa 62%,#17100d 100%)!important;border-color:#d8c8ba;color:#fff!important;text-shadow:0 1px 3px rgba(20,10,7,.8)}
+.contact-form input,.contact-form textarea,.contact-form select{background:linear-gradient(145deg,#eee5da 0%,#c9b8aa 62%,#17100d 100%)!important;border-color:#d8c8ba;color:#fff!important;text-shadow:0 1px 3px rgba(20,10,7,.8)}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:rgba(255,255,255,.9)!important}
+.contact-form{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.contact-form button{background:#fff!important;color:#050403!important;border-color:#fff!important;text-shadow:none}
+.contact-form input,.contact-form textarea,.contact-form select{color:#050403!important;text-shadow:none}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:#050403!important;opacity:1}
+.contact-social-reminder,.contact-social-reminder .social-link{background:transparent!important;border:0!important;box-shadow:none!important}
+.contact-social-reminder .social-logo,.contact-social-reminder .social-logo *{fill:#fff!important;stroke:#fff!important;color:#fff!important}
+.contact-social-reminder .social-logo text{fill:#fff!important}
+.contact-social-reminder .social-link,.contact-social-reminder .social-link:hover,.contact-social-reminder .social-link:focus-visible{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:#fff!important}
+.contact-social-reminder .social-logo,.contact-social-reminder .social-logo rect,.contact-social-reminder .social-logo circle,.contact-social-reminder .social-logo path,.contact-social-reminder .social-logo text{fill:#fff!important;stroke:#fff!important;color:#fff!important;background:transparent!important}
+.contact-social-reminder .social-logo{transform:none!important;filter:none!important}
+.contact-social-reminder .linkedin-logo rect,.contact-social-reminder .facebook-logo circle{fill:none!important;stroke:#fff!important}
+.contact-social-reminder .linkedin-logo text,.contact-social-reminder .facebook-logo text{fill:#fff!important;stroke:none!important}
+.contact-social-reminder .instagram-logo rect,.contact-social-reminder .instagram-logo circle:first-of-type{fill:none!important;stroke:#fff!important}
+.contact-social-reminder .instagram-logo circle:last-of-type{fill:#fff!important;stroke:none!important}
+.contact-social-reminder .facebook-logo circle{fill:none!important;stroke:#fff!important}
+.contact-social-reminder .facebook-logo text{fill:#fff!important;stroke:none!important;font-weight:700}
+.contact-social-reminder .gmail-logo path{fill:none!important;stroke:#fff!important;stroke-width:1.8!important}
+.contact-social-reminder .youtube-logo path:last-child{fill:#050403!important;stroke:#050403!important}
+.social-link:hover,.agenda-card:hover,.about-note:hover,.opinion:hover{background:linear-gradient(145deg,#f6efe7 0%,#d9cabe 62%,#2b1c17 100%)!important}
+button,.content-panel button{filter:none!important;backdrop-filter:none!important;opacity:1!important;box-shadow:none!important;transition:none!important}
+button:hover,button:focus-visible{opacity:1!important;filter:none!important;box-shadow:none!important}
+@media(max-width:700px){.profile-image{height:auto;min-height:0;object-fit:contain}}

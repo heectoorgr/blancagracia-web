@@ -1,0 +1,1 @@
+.home-collage h3{cursor:pointer;transition:opacity 1s ease}.home-collage h3:hover,.home-collage h3:focus-visible{opacity:.55;outline:0;text-decoration:underline;text-underline-offset:6px}.collage-grid-horizontal{opacity:1;visibility:visible;transition:opacity 1s ease,visibility 1s ease}.collage-grid-horizontal.photos-hidden{opacity:0;visibility:hidden;pointer-events:none}

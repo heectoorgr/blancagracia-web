@@ -1,0 +1,1 @@
+.content-panel{animation:none!important}.content-panel.panel-enter{animation:all-panels-fade-in .7s ease both!important}@keyframes all-panels-fade-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}

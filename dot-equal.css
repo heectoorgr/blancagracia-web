@@ -1,0 +1,1 @@
+.auditions-dot{display:none;margin-top:20px;transition:color .2s ease,transform .25s ease;text-decoration:none}.auditions-dot.is-unlocked{display:block}.auditions-dot[aria-expanded="false"]{animation:dot-prompt 1.8s ease-in-out infinite}@media(max-width:700px){.auditions-dot{margin-top:20px}}

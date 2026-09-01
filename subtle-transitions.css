@@ -1,0 +1,1 @@
+.content-panel{animation:none!important}.content-panel.panel-enter{animation:subtle-panel-in .22s ease-out both!important}@keyframes subtle-panel-in{from{opacity:.72;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}

@@ -1,0 +1,1 @@
+.panel-stage:has(.home-panel){min-height:460vh}.home-panel{min-height:460vh!important}.home-photo{bottom:120px;height:48%;max-height:none}@media(max-width:700px){.panel-stage:has(.home-panel){min-height:440vh}.home-panel{min-height:440vh!important}.home-photo{bottom:90px;height:42%}}
