@@ -182,7 +182,7 @@ const auditionsDot = document.querySelector('.auditions-dot');
 const auditionsSection = document.querySelector('#auditions-section');
 const socialPanel = document.querySelector('[data-content="redes"]');
 
-const notionScheduleUrl = 'https://dashing-need-0dc.notion.site/3c6d882b0e3180908109d07874becee0?v=3c6d882b0e3180d0b71d000c403836c0&pvs=141';
+const notionScheduleUrl = siteContent.agenda?.scheduleUrl || 'https://dashing-need-0dc.notion.site/3c6d882b0e3180908109d07874becee0?v=3c6d882b0e3180d0b71d000c403836c0&pvs=141';
 
 function showExitNotice(link) {
   if (localStorage.getItem('skipExitNotice') === 'true') {
@@ -510,7 +510,7 @@ const defaultUpcoming = [
 const upcomingItems = siteContent.agenda?.upcoming?.length ? siteContent.agenda.upcoming : defaultUpcoming;
 const upcomingEvents = document.createElement('div');
 upcomingEvents.className = 'upcoming-events';
-upcomingEvents.innerHTML = upcomingItems.map((item) => `<article class="upcoming-event"><a href="${item.link || '#'}" class="upcoming-event-link">${item.link ? 'Más información' : '[Añadir enlace]'}</a><strong>${item.type}</strong><time>${item.date}</time><span>${item.place}</span><p>${item.description}</p></article>`).join('');
+upcomingEvents.innerHTML = upcomingItems.map((item) => `<article class="upcoming-event">${item.link ? `<a href="${item.link}" class="upcoming-event-link">Más información</a>` : ''}${item.type ? `<strong>${item.type}</strong>` : ''}${item.date ? `<time>${item.date}</time>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
 const upcomingSection = document.createElement('section');
 upcomingSection.className = 'upcoming-section';
 upcomingSection.append(upcomingTitle, upcomingEvents);
@@ -523,7 +523,7 @@ const defaultPrevious = [
 const previousItems = siteContent.agenda?.previous?.length ? siteContent.agenda.previous : defaultPrevious;
 const previousEvents = document.createElement('section');
 previousEvents.className = 'previous-events-card';
-previousEvents.innerHTML = `<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list">${previousItems.map((item) => `<article><time>${item.date}</time><strong>${item.name}</strong><span>${item.place}</span><p>${item.description}</p></article>`).join('')}</div>`;
+previousEvents.innerHTML = `<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list">${previousItems.map((item) => `<article>${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('')}</div>`;
 scheduleHint.after(previousEvents);
 const calendarPreview = scheduleSection.querySelector('.full-calendar-link');
 calendarPreview.remove();

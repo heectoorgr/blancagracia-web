@@ -38,27 +38,30 @@ collections:
             name: "agenda"
             widget: "object"
             fields:
+              - { label: "Enlace de \"Mira mi agenda\" (Notion)", name: "scheduleUrl", widget: "string", hint: "Enlace al calendario completo (por ejemplo de Notion)." }
               - label: "Próximos eventos"
                 name: "upcoming"
                 widget: "list"
                 label_singular: "Evento próximo"
                 summary: "{{fields.type}} · {{fields.date}}"
+                hint: "Deja en blanco cualquier campo que no quieras mostrar (por ejemplo el enlace o la descripción) y no aparecerá en la web."
                 fields:
-                  - { label: "Enlace (opcional)", name: "link", widget: "string", required: false, hint: "Enlace a más información sobre el evento, si lo hay" }
-                  - { label: "Tipo de trabajo", name: "type", widget: "string" }
-                  - { label: "Fecha o fechas", name: "date", widget: "string" }
-                  - { label: "Lugar", name: "place", widget: "string" }
-                  - { label: "Descripción", name: "description", widget: "text" }
+                  - { label: "Enlace (opcional)", name: "link", widget: "string", required: false, hint: "Enlace a más información sobre el evento, si lo hay. Déjalo vacío si no tienes." }
+                  - { label: "Tipo de trabajo", name: "type", widget: "string", required: false }
+                  - { label: "Fecha o fechas", name: "date", widget: "string", required: false }
+                  - { label: "Lugar", name: "place", widget: "string", required: false }
+                  - { label: "Descripción", name: "description", widget: "text", required: false }
               - label: "Eventos anteriores"
                 name: "previous"
                 widget: "list"
                 label_singular: "Evento anterior"
                 summary: "{{fields.name}} · {{fields.date}}"
+                hint: "Deja en blanco cualquier campo que no quieras mostrar y no aparecerá en la web."
                 fields:
-                  - { label: "Fecha", name: "date", widget: "string" }
-                  - { label: "Nombre del evento", name: "name", widget: "string" }
-                  - { label: "Lugar", name: "place", widget: "string" }
-                  - { label: "Descripción breve", name: "description", widget: "text" }
+                  - { label: "Fecha", name: "date", widget: "string", required: false }
+                  - { label: "Nombre del evento", name: "name", widget: "string", required: false }
+                  - { label: "Lugar", name: "place", widget: "string", required: false }
+                  - { label: "Descripción breve", name: "description", widget: "text", required: false }
 
           - label: "Redes sociales"
             name: "social"
