@@ -9,7 +9,14 @@
   :root{--ink:#17252a;--muted:#657579;--accent:#c45d45;--line:#dce5e3;--paper:#fffdf9;--bg:#e8eeec}
   *{box-sizing:border-box}
   body{margin:0;font-family:"DM Sans",sans-serif;color:var(--ink);background:var(--bg)}
-  #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:opacity .4s ease}
+  #panel{opacity:0;transition:opacity .4s ease}
+  .device-tabs{display:flex;gap:8px;margin-bottom:10px}
+  .device-tab{border:1px solid var(--line);background:#fff;color:var(--muted);padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer}
+  .device-tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .device-hint{font-size:11px;color:var(--muted);margin:-4px 0 10px}
+  .entry.desktop-only-badge:before{content:"Solo visible en ordenador";display:inline-block;font-size:10px;color:var(--accent);margin-bottom:6px}
+  .entry.mobile-hidden{display:none}
   .gate-card{width:100%;max-width:320px;padding:32px;background:var(--paper);border:1px solid var(--line);border-radius:8px;text-align:center}
   .gate-card h1{font-size:20px;margin:0 0 18px}
   .gate-card input{width:100%;padding:12px;font-size:18px;text-align:center;border:1px solid var(--line);border-radius:6px;margin-bottom:12px;letter-spacing:2px}
@@ -56,10 +63,14 @@
 <div id="panel">
   <section id="section-bio">
     <h2>Biografía</h2>
-    <label>Párrafos del texto</label>
-    <div id="bioParagraphs"></div>
-    <button class="add-btn" type="button" data-add="bioParagraph">+ Añadir párrafo</button>
+    <label>Texto de la biografía</label>
+    <textarea id="bioText" style="min-height:240px"></textarea>
     <label style="margin-top:18px">Fotos de la biografía</label>
+    <div class="device-tabs">
+      <button type="button" class="device-tab active" data-device="pc">PC</button>
+      <button type="button" class="device-tab" data-device="movil">Móvil</button>
+    </div>
+    <p class="device-hint">Las 2 primeras fotos se ven en ordenador y en móvil. Las siguientes solo se ven en ordenador.</p>
     <div id="bioPhotos"></div>
     <button class="add-btn" type="button" data-add="bioPhoto">+ Añadir foto</button>
   </section>
@@ -142,13 +153,13 @@ function makeRemovable(container, entry) {
   entry.prepend(row);
 }
 
-function addBioParagraph(text = '') {
-  const wrap = document.createElement('div');
-  wrap.className = 'entry';
-  wrap.innerHTML = '<textarea class="bio-paragraph"></textarea>';
-  wrap.querySelector('textarea').value = text;
-  makeRemovable(null, wrap);
-  document.getElementById('bioParagraphs').append(wrap);
+function refreshBioPhotoBadges() {
+  const entries = [...document.querySelectorAll('#bioPhotos .entry')];
+  const activeTab = document.querySelector('.device-tab.active')?.dataset.device || 'pc';
+  entries.forEach((entry, index) => {
+    entry.classList.toggle('desktop-only-badge', index >= 2);
+    entry.classList.toggle('mobile-hidden', activeTab === 'movil' && index >= 2);
+  });
 }
 
 function addPhotoEntry(container, currentPath) {
@@ -167,9 +178,11 @@ function addPhotoEntry(container, currentPath) {
     wrap.dataset.currentPath = finalPath;
     wrap._pendingImage = { path: finalPath, dataBase64 };
     img.src = URL.createObjectURL(file);
+    refreshBioPhotoBadges();
   });
   makeRemovable(null, wrap);
   container.append(wrap);
+  refreshBioPhotoBadges();
 }
 
 function addUpcomingEntry(item = {}) {
@@ -241,8 +254,9 @@ function addGalleryEntry(item = {}) {
 }
 
 function renderContent(content) {
-  (content.bio?.paragraphs || []).forEach(addBioParagraph);
+  document.getElementById('bioText').value = (content.bio?.paragraphs || []).join('\n\n');
   (content.bio?.photos || []).forEach((path) => addPhotoEntry(document.getElementById('bioPhotos'), path));
+  refreshBioPhotoBadges();
   document.getElementById('scheduleUrl').value = content.agenda?.scheduleUrl || '';
   (content.agenda?.upcoming || []).forEach(addUpcomingEntry);
   (content.agenda?.previous || []).forEach(addPreviousEntry);
@@ -256,7 +270,7 @@ function renderContent(content) {
 }
 
 function collectContent() {
-  const bioParagraphs = [...document.querySelectorAll('#bioParagraphs .bio-paragraph')].map((el) => el.value).filter(Boolean);
+  const bioParagraphs = document.getElementById('bioText').value.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const bioPhotos = [...document.querySelectorAll('#bioPhotos .entry')].map((el) => el.dataset.currentPath).filter(Boolean);
   const upcoming = [...document.querySelectorAll('#upcomingList .entry')].map((el) => ({
     link: el.querySelector('.f-link').value,
@@ -310,12 +324,19 @@ function collectContent() {
 document.querySelectorAll('[data-add]').forEach((button) => {
   button.addEventListener('click', () => {
     const type = button.dataset.add;
-    if (type === 'bioParagraph') addBioParagraph();
     if (type === 'bioPhoto') addPhotoEntry(document.getElementById('bioPhotos'), '');
     if (type === 'upcoming') addUpcomingEntry();
     if (type === 'previous') addPreviousEntry();
     if (type === 'audition') addAuditionEntry();
     if (type === 'galleryPhoto') addGalleryEntry();
+  });
+});
+
+document.querySelectorAll('.device-tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.device-tab').forEach((t) => t.classList.remove('active'));
+    tab.classList.add('active');
+    refreshBioPhotoBadges();
   });
 });
 
@@ -346,9 +367,15 @@ async function unlock(code) {
   ACCESS_CODE = code;
   sessionStorage.setItem('adminCode', code);
   renderContent(content);
-  document.getElementById('gate').style.display = 'none';
-  document.getElementById('panel').style.display = 'block';
-  document.getElementById('saveBar').style.display = 'flex';
+  const gate = document.getElementById('gate');
+  const panel = document.getElementById('panel');
+  gate.style.opacity = '0';
+  window.setTimeout(() => {
+    gate.style.display = 'none';
+    panel.style.display = 'block';
+    document.getElementById('saveBar').style.display = 'flex';
+    requestAnimationFrame(() => { panel.style.opacity = '1'; });
+  }, 400);
 }
 
 document.getElementById('enterBtn').addEventListener('click', () => {
