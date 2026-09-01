@@ -83,6 +83,10 @@ async function buildTranslations(content) {
 
   for (const [language, targetLanguage] of Object.entries(targets)) {
     translations[language] = {
+      hero: {
+        name: content.hero?.name || '',
+        role: await translateText(content.hero?.role || '', targetLanguage)
+      },
       bio: {
         paragraphs: await Promise.all((content.bio?.paragraphs || []).map((paragraph) => translateText(paragraph, targetLanguage)))
       },

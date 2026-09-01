@@ -64,6 +64,14 @@
 </div>
 
 <div id="panel">
+  <section id="section-hero">
+    <h2>Portada</h2>
+    <label>Nombre principal</label>
+    <input id="heroName" type="text">
+    <label>Texto profesional</label>
+    <input id="heroRole" type="text">
+  </section>
+
   <section id="section-bio">
     <h2>Biografía</h2>
     <label>Texto de la biografía</label>
@@ -192,7 +200,7 @@ function setupEventLinkControls(wrap, item = {}) {
   displaySelect.value = display === 'raw' ? 'raw' : 'custom';
   const updateTextState = () => {
     linkTextInput.disabled = displaySelect.value === 'raw';
-    linkTextInput.placeholder = displaySelect.value === 'raw' ? 'Se mostrará el link completo' : 'Ejemplo: Mira esto';
+    linkTextInput.placeholder = displaySelect.value === 'raw' ? 'Se mostrará el link completo' : 'Texto visible del enlace';
   };
   displaySelect.addEventListener('change', updateTextState);
   updateTextState();
@@ -306,6 +314,8 @@ function addGalleryEntry(item = {}, container) {
 }
 
 function renderContent(content) {
+  document.getElementById('heroName').value = content.hero?.name || 'Blanca Graciá';
+  document.getElementById('heroRole').value = content.hero?.role || 'Pianist, Repetiteur, Vocal Coach';
   document.getElementById('bioText').value = (content.bio?.paragraphs || []).join('\n\n');
   attachCharacterLimit(document.getElementById('bioText'), 2500, document.getElementById('bioTextCounter'));
   (content.bio?.photos || []).forEach((path) => addPhotoEntry(document.getElementById('bioPhotos'), path));
@@ -365,6 +375,10 @@ function collectContent() {
   });
 
   const content = {
+    hero: {
+      name: document.getElementById('heroName').value,
+      role: document.getElementById('heroRole').value
+    },
     bio: { paragraphs: bioParagraphs, photos: bioPhotos },
     agenda: {
       scheduleUrl: document.getElementById('scheduleUrl').value,

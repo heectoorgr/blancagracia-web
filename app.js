@@ -185,6 +185,7 @@ const socialPanel = document.querySelector('[data-content="redes"]');
 
 const notionScheduleUrl = siteContent.agenda?.scheduleUrl || 'https://dashing-need-0dc.notion.site/3c6d882b0e3180908109d07874becee0?v=3c6d882b0e3180d0b71d000c403836c0&pvs=141';
 let currentLanguage = 'es';
+const defaultHero = { name: 'Blanca Graciá', role: 'Pianist, Repetiteur, Vocal Coach' };
 
 function showExitNotice(link) {
   if (localStorage.getItem('skipExitNotice') === 'true') {
@@ -328,6 +329,11 @@ if (auditionsDot && auditionsSection && socialPanel) {
 const getLocalizedContent = (language) => {
   const translated = language === 'es' ? null : siteContent.translations?.[language];
   return {
+    hero: {
+      ...siteContent.hero,
+      name: translated?.hero?.name || siteContent.hero?.name || defaultHero.name,
+      role: translated?.hero?.role || siteContent.hero?.role || defaultHero.role
+    },
     bio: {
       ...siteContent.bio,
       paragraphs: translated?.bio?.paragraphs || siteContent.bio?.paragraphs
@@ -806,6 +812,8 @@ function setLanguage(language) {
   about.querySelectorAll('.about-intro > p:not(.panel-kicker)').forEach((item, index) => { item.textContent = aboutParagraphs[index] || ''; });
   const headerRole = document.querySelector('.header-role');
   if (headerRole) headerRole.textContent = copy.role;
+  const profileTitle = document.querySelector('.profile-overlay h1');
+  if (profileTitle) profileTitle.textContent = `${localizedContent.hero.name} | ${localizedContent.hero.role || copy.role}`;
   const agendaIntro = document.querySelector('[data-content="agenda"] > p:not(.panel-kicker)');
   if (agendaIntro) agendaIntro.textContent = copy.agendaIntro;
   document.querySelector('[data-content="redes"] > p:not(.panel-kicker)').textContent = copy.socialIntro;

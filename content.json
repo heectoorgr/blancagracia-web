@@ -1,4 +1,8 @@
 {
+  "hero": {
+    "name": "Blanca Graciá",
+    "role": "Pianist, Repetiteur, Vocal Coach"
+  },
   "bio": {
     "paragraphs": [
       "Formada en el Conservatorio Profesional de Elda “Ana María Sánchez”, continuó sus estudios superiores en el Conservatorio Superior de Música “Joaquín Rodrigo” de Valencia, donde se graduó en la especialidad de Piano con honores. Su inquietud artística la llevó a ampliar su formación en Alemania y posteriormente en el Conservatorio Real de Amberes, donde obtuvo el Máster en Acompañamiento Vocal y Lied con matrícula de honor bajo la dirección de Jeanne-Minette Cilliers.",
@@ -39,9 +43,9 @@
     ],
     "previous": [
       {
-        "link": "https://www.example.com/",
+        "link": "",
         "linkDisplay": "custom",
-        "linkText": "Mira esto",
+        "linkText": "",
         "date": "[FECHA]",
         "name": "[Nombre del evento]",
         "place": "[Lugar]",
@@ -122,6 +126,10 @@
   },
   "translations": {
     "en": {
+      "hero": {
+        "name": "Blanca Graciá",
+        "role": "Pianist, Repetiteur, Vocal Coach"
+      },
       "bio": {
         "paragraphs": [
           "Trained at the “Ana María Sánchez” Professional Conservatory of Elda, she continued her higher education at the “Joaquín Rodrigo” Conservatory of Music in Valencia, where she graduated in Piano with honors. Her artistic interest led her to expand her training in Germany and later at the Royal Conservatory of Antwerp, where she obtained a Master's Degree in Vocal Accompaniment and Lied with honors under the direction of Jeanne-Minette Cilliers.",
@@ -156,7 +164,9 @@
         ],
         "previous": [
           {
-            "link": "https://www.example.com/",
+            "link": "",
+            "linkDisplay": "custom",
+            "linkText": "",
             "date": "[DATE]",
             "name": "[Event name]",
             "place": "[Place]",
@@ -183,6 +193,10 @@
       }
     },
     "va": {
+      "hero": {
+        "name": "Blanca Graciá",
+        "role": "Pianista, Repetidora i Coach Vocal"
+      },
       "bio": {
         "paragraphs": [
           "Formada al Conservatori Professional d'Elda “Ana María Sánchez”, va continuar els seus estudis superiors al Conservatori Superior de Música “Joaquín Rodrigo” de València, on es va graduar en l'especialitat de Piano amb honors. La seva inquietud artística la va portar a ampliar la seva formació a Alemanya i posteriorment al Conservatori Reial d'Anvers, on va obtenir el Màster en Acompanyament Vocal i Lied amb matrícula d'honor sota la direcció de Jeanne-Minette Cilliers.",
@@ -217,7 +231,9 @@
         ],
         "previous": [
           {
-            "link": "https://www.example.com/",
+            "link": "",
+            "linkDisplay": "custom",
+            "linkText": "",
             "date": "[DATA]",
             "name": "[Nom de l'esdeveniment]",
             "place": "[Lloc]",
