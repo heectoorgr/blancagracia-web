@@ -976,7 +976,8 @@ body {
 }
 
 .upcoming-event-link {
-  text-decoration: none !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
 }
 
 [data-content="redes"] .social-grid {
