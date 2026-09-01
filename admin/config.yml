@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: heectoorgr/blancagracia-web
   branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
 # Las fotos nuevas que subas desde el panel se guardan aquí:
 media_folder: "images/uploads"

@@ -8,20 +8,9 @@
   <style>
     body { font-family: "DM Sans", sans-serif; }
   </style>
-  <!-- Login del panel (Netlify Identity) -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- Motor del panel de edición (Decap CMS) -->
+  <!-- Motor del panel de edición (Decap CMS). Login con GitHub: solo colaboradores del repositorio pueden entrar. -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', (user) => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-        }
-      });
-    }
-  </script>
 </body>
 </html>
