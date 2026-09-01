@@ -153,15 +153,5 @@
     <section class="content-panel" data-content="contacto" role="tabpanel" hidden><p class="panel-kicker">05 · Hablemos</p><h2>Contacto</h2><p>¿Tienes una idea, una propuesta o simplemente quieres saludar? Puedes escribirme mediante este formulario.</p><form class="contact-form" action="https://formsubmit.co/gr_blanca@hotmail.es" method="POST"><input type="hidden" name="_subject" value="Nuevo mensaje desde la web de Blanca Graciá"><input type="hidden" name="_captcha" value="false"><label>Nombre<input type="text" name="nombre" required placeholder="Tu nombre"></label><label>Email<input type="email" name="email" required placeholder="tu@email.com"></label><label>Mensaje<textarea name="mensaje" required placeholder="Escribe tu mensaje"></textarea></label><button type="submit">Enviar mensaje</button></form></section>
   </main>
   <script type="module" src="app.js"></script>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', (user) => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-        }
-      });
-    }
-  </script>
 </body>
 </html>
