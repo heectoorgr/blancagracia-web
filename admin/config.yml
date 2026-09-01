@@ -29,7 +29,7 @@ collections:
                 field: { label: "Párrafo", name: "text", widget: "text" }
               - label: "Fotos de la biografía"
                 name: "photos"
-                hint: "Sube la foto desde tu dispositivo con el botón. El fundido/recorte de la sección se aplica solo."
+                hint: "Sube la foto desde tu dispositivo con el botón. La web la recorta y ajusta automáticamente al mismo tamaño y fundido que tenía la foto anterior, no tienes que hacer nada más. Para que el recorte quede bien, sube fotos verticales (más altas que anchas)."
                 widget: "list"
                 label_singular: "Foto"
                 field: { label: "Foto", name: "image", widget: "image" }
@@ -87,7 +87,7 @@ collections:
             widget: "list"
             label_singular: "Foto"
             summary: "{{fields.alt}}"
-            hint: "Sube la foto desde tu dispositivo. Mantiene el mismo estilo y fundido que las demás fotos de esta galería."
+            hint: "Sube la foto desde tu dispositivo. Se ajusta automáticamente al mismo tamaño y fundido que las demás fotos de esta galería, no hace falta redimensionarla a mano. Para que el recorte quede bien, sube fotos horizontales (más anchas que altas)."
             fields:
               - { label: "Foto", name: "image", widget: "image" }
               - { label: "Descripción de la foto", name: "alt", widget: "string", required: false }
