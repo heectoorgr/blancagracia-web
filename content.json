@@ -46,12 +46,14 @@
         "description": "[Descripción breve del evento]"
       },
       {
+        "link": "",
         "date": "[FECHA]",
         "name": "[Nombre del evento]",
         "place": "[Lugar]",
         "description": "[Descripción breve del evento]"
       },
       {
+        "link": "",
         "date": "[FECHA]",
         "name": "[Nombre del evento]",
         "place": "[Lugar]",
@@ -115,5 +117,129 @@
   "contact": {
     "intro": "¿Tienes una idea, una propuesta o simplemente quieres saludar? Puedes escribirme mediante este formulario.",
     "email": "gr_blanca@hotmail.es"
+  },
+  "translations": {
+    "en": {
+      "bio": {
+        "paragraphs": [
+          "Trained at the “Ana María Sánchez” Professional Conservatory of Elda, she continued her higher education at the “Joaquín Rodrigo” Conservatory of Music in Valencia, where she graduated in Piano with honors. Her artistic interest led her to expand her training in Germany and later at the Royal Conservatory of Antwerp, where she obtained a Master's Degree in Vocal Accompaniment and Lied with honors under the direction of Jeanne-Minette Cilliers.",
+          "His professional career has experienced notable growth in recent years. She has been part of the Young Artists Program 2023–2024 at the National Opera Studio in London and has recently worked as a repeat pianist at the English National Opera during the 2025–2026 season. In this context, he has participated in various operatic productions under the direction of renowned teachers such as Julia Jones, Marie Jacquot, Clelia Cafiero, Yi-Chen Li, Matthew Kofi Waldren and Kerem Hasan, among others.",
+          "As a performer specialized in Lied, Blanca Graciá Rodríguez has performed at prominent international festivals such as the Oxford Lieder Festival, SongEasel or the Hidalgo Festival in Munich. Likewise, she has been recognized in various competitions, being a finalist in the II International Lied and Song Competition (Spain, 2018), in the Galantes Talanti Competition (Latvia, 2022) and in the Ashburnham English Song Awards (2025), in addition to obtaining third prize in the International Music Competition France in 2022.",
+          "With this designation, Elda recognizes the talent, international projection and artistic excellence of a local musician who will bring her experience and sensitivity to the front of the Idella pasodoble, bringing a new dimension to this act so anticipated and loved by the public."
+        ]
+      },
+      "agenda": {
+        "upcoming": [
+          {
+            "link": "",
+            "type": "[Type of work]",
+            "date": "[Date or dates]",
+            "place": "[Place]",
+            "description": "[Event Description]"
+          },
+          {
+            "link": "",
+            "type": "[Type of work]",
+            "date": "[Date or dates]",
+            "place": "[Place]",
+            "description": "[Event Description]"
+          },
+          {
+            "link": "",
+            "type": "[Type of work]",
+            "date": "[Date or dates]",
+            "place": "[Place]",
+            "description": "[Event Description]"
+          }
+        ],
+        "previous": [
+          {
+            "link": "https://www.example.com/",
+            "date": "[DATE]",
+            "name": "[Event name]",
+            "place": "[Place]",
+            "description": "[Brief description of the event]"
+          },
+          {
+            "link": "",
+            "date": "[DATE]",
+            "name": "[Event name]",
+            "place": "[Place]",
+            "description": "[Brief description of the event]"
+          },
+          {
+            "link": "",
+            "date": "[DATE]",
+            "name": "[Event name]",
+            "place": "[Place]",
+            "description": "[Brief description of the event]"
+          }
+        ]
+      },
+      "contact": {
+        "intro": "Do you have an idea, a proposal or just want to say hello? You can write to me using this form."
+      }
+    },
+    "va": {
+      "bio": {
+        "paragraphs": [
+          "Formada al Conservatori Professional d'Elda “Ana María Sánchez”, va continuar els seus estudis superiors al Conservatori Superior de Música “Joaquín Rodrigo” de València, on es va graduar en l'especialitat de Piano amb honors. La seva inquietud artística la va portar a ampliar la seva formació a Alemanya i posteriorment al Conservatori Reial d'Anvers, on va obtenir el Màster en Acompanyament Vocal i Lied amb matrícula d'honor sota la direcció de Jeanne-Minette Cilliers.",
+          "Su trayectoria profesional ha experimentado un notable crecimiento en los últimos años. Ha formado parte del Programa para Jóvenes Artistas 2023–2024 del National Opera Studio de Londres y, recientemente, ha desarrollado su labor como pianista repetidora en la English National Opera durante la temporada 2025–2026. En este contexto, ha participado en diversas producciones operísticas bajo la dirección de reconocidos maestros como Julia Jones, Marie Jacquot, Clelia Cafiero, Yi-Chen Li, Matthew Kofi Waldren y Kerem Hasan, entre otros.",
+          "Como intérprete especializada en Lied, Blanca Graciá Rodríguez ha actuado en destacados festivales internacionales como el Oxford Lieder Festival, SongEasel o el Hidalgo Festival de Múnich. Asimismo, ha sido reconocida en diversos certámenes, siendo finalista en el II Certamen Internacional de Lied y Canción (España, 2018), en el Concurso Galantes Talanti (Letonia, 2022) y en los Ashburnham English Song Awards (2025), además de obtener el tercer premio en el International Music Competition France en 2022.",
+          "Con esta designación, Elda reconoce el talento, la proyección internacional y la excelencia artística de una música local que llevará su experiencia y sensibilidad al frente del pasodoble Idella, aportando una nueva dimensión a este acto tan esperado y querido por el público."
+        ]
+      },
+      "agenda": {
+        "upcoming": [
+          {
+            "link": "",
+            "type": "[Tipus de treball]",
+            "date": "[Data o dates]",
+            "place": "[Lloc]",
+            "description": "[Descripció de l'esdeveniment]"
+          },
+          {
+            "link": "",
+            "type": "[Tipus de treball]",
+            "date": "[Data o dates]",
+            "place": "[Lloc]",
+            "description": "[Descripció de l'esdeveniment]"
+          },
+          {
+            "link": "",
+            "type": "[Tipus de treball]",
+            "date": "[Data o dates]",
+            "place": "[Lloc]",
+            "description": "[Descripció de l'esdeveniment]"
+          }
+        ],
+        "previous": [
+          {
+            "link": "https://www.example.com/",
+            "date": "[DATA]",
+            "name": "[Nom de l'esdeveniment]",
+            "place": "[Lloc]",
+            "description": "[Descripció breu de l'esdeveniment]"
+          },
+          {
+            "link": "",
+            "date": "[DATA]",
+            "name": "[Nom de l'esdeveniment]",
+            "place": "[Lloc]",
+            "description": "[Descripció breu de l'esdeveniment]"
+          },
+          {
+            "link": "",
+            "date": "[DATA]",
+            "name": "[Nom de l'esdeveniment]",
+            "place": "[Lloc]",
+            "description": "[Descripció breu de l'esdeveniment]"
+          }
+        ]
+      },
+      "contact": {
+        "intro": "Tens una idea, una proposta o simplement vols saludar? Podeu escriure'm mitjançant aquest formulari."
+      }
+    }
   }
 }
