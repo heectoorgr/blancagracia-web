@@ -31,6 +31,15 @@
   #status{font-size:13px}
   #status.ok{color:#2a7d4f}
   #status.err{color:var(--accent)}
+  @media (max-width: 480px) {
+    #panel{padding:16px 14px 90px}
+    h2{font-size:13px;margin:28px 0 12px}
+    .entry{padding:12px}
+    .photo-preview{width:96px;height:96px}
+    input[type=text],input[type=email],input[type=url],textarea{font-size:16px}
+    .save-bar{padding:12px 14px;flex-wrap:wrap}
+    #status{width:100%}
+  }
 </style>
 </head>
 <body>
@@ -120,6 +129,11 @@ function sanitizeName(name) {
   return name.toLowerCase().replace(/[^a-z0-9._-]/g, '-');
 }
 
+function toImageUrl(path) {
+  if (!path) return '';
+  return '/' + path.split('/').map(encodeURIComponent).join('/');
+}
+
 function makeRemovable(container, entry) {
   const row = document.createElement('div');
   row.className = 'entry-row';
@@ -144,7 +158,7 @@ function addPhotoEntry(container, currentPath) {
   wrap.innerHTML = '<img class="photo-preview">' +
     '<input type="file" accept="image/*" class="photo-input">';
   const img = wrap.querySelector('img');
-  img.src = currentPath || '';
+  img.src = toImageUrl(currentPath);
   wrap.querySelector('.photo-input').addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -211,7 +225,7 @@ function addGalleryEntry(item = {}) {
   wrap.innerHTML = '<img class="photo-preview">' +
     '<input type="file" accept="image/*" class="photo-input">' +
     '<label>Descripción de la foto</label><input type="text" class="f-alt">';
-  wrap.querySelector('img').src = item.image || '';
+  wrap.querySelector('img').src = toImageUrl(item.image);
   wrap.querySelector('.f-alt').value = item.alt || '';
   wrap.querySelector('.photo-input').addEventListener('change', async (event) => {
     const file = event.target.files[0];
