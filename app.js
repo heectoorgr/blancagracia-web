@@ -183,6 +183,7 @@ const auditionsSection = document.querySelector('#auditions-section');
 const socialPanel = document.querySelector('[data-content="redes"]');
 
 const notionScheduleUrl = siteContent.agenda?.scheduleUrl || 'https://dashing-need-0dc.notion.site/3c6d882b0e3180908109d07874becee0?v=3c6d882b0e3180d0b71d000c403836c0&pvs=141';
+let currentLanguage = 'es';
 
 function showExitNotice(link) {
   if (localStorage.getItem('skipExitNotice') === 'true') {
@@ -192,7 +193,8 @@ function showExitNotice(link) {
 
   const notice = document.createElement('div');
   notice.className = 'exit-notice';
-  notice.innerHTML = '<div class="exit-notice-box" role="dialog" aria-modal="true" aria-labelledby="exit-notice-title"><h2 id="exit-notice-title">Vas a abandonar esta página</h2><p>Vas a abrir un enlace externo. ¿Quieres continuar?</p><label><input type="checkbox" class="exit-notice-checkbox"> No volver a recordármelo</label><div class="exit-notice-actions"><button type="button" class="exit-notice-cancel">Cancelar</button><button type="button" class="exit-notice-continue">Continuar</button></div></div>';
+  const copy = translations[currentLanguage]?.exitNotice || translations.es.exitNotice;
+  notice.innerHTML = `<div class="exit-notice-box" role="dialog" aria-modal="true" aria-labelledby="exit-notice-title"><h2 id="exit-notice-title">${copy.title}</h2><p>${copy.message}</p><label><input type="checkbox" class="exit-notice-checkbox"> ${copy.skip}</label><div class="exit-notice-actions"><button type="button" class="exit-notice-cancel">${copy.cancel}</button><button type="button" class="exit-notice-continue">${copy.continue}</button></div></div>`;
   document.body.append(notice);
   notice.querySelector('.exit-notice-checkbox').focus();
 
@@ -233,6 +235,13 @@ const translations = {
     previousEventName: '[Event name]',
     previousEventPlace: '[Venue]',
     previousEventDescription: '[Brief event description]',
+    exitNotice: {
+      title: 'You are leaving this page',
+      message: 'You are about to open an external link. Do you want to continue?',
+      skip: 'Do not remind me again',
+      cancel: 'Cancel',
+      continue: 'Continue'
+    },
     aboutBio: ['Trained at the Professional Conservatory of Elda “Ana María Sánchez”, she continued her higher studies at the “Joaquín Rodrigo” Higher Conservatory of Music in Valencia, where she graduated with honours in Piano. Her artistic curiosity led her to continue her training in Germany and later at the Royal Conservatoire of Antwerp, where she obtained a Master’s degree in Vocal Accompaniment and Lied with highest honours under the direction of Jeanne-Minette Cilliers.', 'Her professional career has grown significantly in recent years. She was part of the 2023–2024 Young Artists Programme at London’s National Opera Studio and has recently worked as a répétiteur at English National Opera during the 2025–2026 season. In this context, she has participated in opera productions under renowned conductors including Julia Jones, Marie Jacquot, Clelia Cafiero, Yi-Chen Li, Matthew Kofi Waldren and Kerem Hasan, among others.', 'As a Lied specialist, Blanca Graciá Rodríguez has performed at leading international festivals such as Oxford Lieder Festival, SongEasel and the Hidalgo Festival in Munich. She has also received recognition in several competitions, becoming a finalist in the II International Lied and Song Competition (Spain, 2018), the Galantes Talanti Competition (Latvia, 2022) and the Ashburnham English Song Awards (2025), as well as winning third prize at the International Music Competition France in 2022.', 'With this appointment, Elda recognises the talent, international profile and artistic excellence of a local musician who will bring her experience and sensitivity to the pasodoble Idella, adding a new dimension to this much-anticipated and beloved event.']
   },
   es: {
@@ -261,6 +270,13 @@ const translations = {
     previousEventName: '[Nombre del evento]',
     previousEventPlace: '[Lugar]',
     previousEventDescription: '[Descripción breve del evento]',
+    exitNotice: {
+      title: 'Vas a abandonar esta página',
+      message: 'Vas a abrir un enlace externo. ¿Quieres continuar?',
+      skip: 'No volver a recordármelo',
+      cancel: 'Cancelar',
+      continue: 'Continuar'
+    },
     aboutBio: ['Formada en el Conservatorio Profesional de Elda “Ana María Sánchez”, continuó sus estudios superiores en el Conservatorio Superior de Música “Joaquín Rodrigo” de Valencia, donde se graduó en la especialidad de Piano con honores. Su inquietud artística la llevó a ampliar su formación en Alemania y posteriormente en el Conservatorio Real de Amberes, donde obtuvo el Máster en Acompañamiento Vocal y Lied con matrícula de honor bajo la dirección de Jeanne-Minette Cilliers.', 'Su trayectoria profesional ha experimentado un notable crecimiento en los últimos años. Ha formado parte del Programa para Jóvenes Artistas 2023–2024 del National Opera Studio de Londres y, recientemente, ha desarrollado su labor como pianista repetidora en la English National Opera durante la temporada 2025–2026. En este contexto, ha participado en diversas producciones operísticas bajo la dirección de reconocidos maestros como Julia Jones, Marie Jacquot, Clelia Cafiero, Yi-Chen Li, Matthew Kofi Waldren y Kerem Hasan, entre otros.', 'Como intérprete especializada en Lied, Blanca Graciá Rodríguez ha actuado en destacados festivales internacionales como el Oxford Lieder Festival, SongEasel o el Hidalgo Festival de Múnich. Asimismo, ha sido reconocida en diversos certámenes, siendo finalista en el II Certamen Internacional de Lied y Canción (España, 2018), en el Concurso Galantes Talanti (Letonia, 2022) y en los Ashburnham English Song Awards (2025), además de obtener el tercer premio en el International Music Competition France en 2022.', 'Con esta designación, Elda reconoce el talento, la proyección internacional y la excelencia artística de una música local que llevará su experiencia y sensibilidad al frente del pasodoble Idella, aportando una nueva dimensión a este acto tan esperado y querido por el público.']
   },
   va: {
@@ -289,6 +305,13 @@ const translations = {
     previousEventName: '[Nom de l’esdeveniment]',
     previousEventPlace: '[Lloc]',
     previousEventDescription: '[Descripció breu de l’esdeveniment]',
+    exitNotice: {
+      title: 'Estàs abandonant esta pàgina',
+      message: 'Estàs a punt d’obrir un enllaç extern. Vols continuar?',
+      skip: 'No tornar a recordar-m’ho',
+      cancel: 'Cancel·lar',
+      continue: 'Continuar'
+    },
     aboutBio: ['Formada en el Conservatori Professional d’Elda “Ana María Sánchez”, va continuar els seus estudis superiors en el Conservatori Superior de Música “Joaquín Rodrigo” de València, on es va graduar amb honors en l’especialitat de Piano. La seua inquietud artística la va portar a ampliar la seua formació a Alemanya i posteriorment al Conservatori Reial d’Anvers, on va obtindre el Màster en Acompanyament Vocal i Lied amb matrícula d’honor sota la direcció de Jeanne-Minette Cilliers.', 'La seua trajectòria professional ha crescut notablement en els últims anys. Ha format part del Programa per a Joves Artistes 2023–2024 del National Opera Studio de Londres i, recentment, ha treballat com a pianista repetidora en l’English National Opera durant la temporada 2025–2026. En este context, ha participat en diverses produccions operístiques sota la direcció de mestres reconeguts com Julia Jones, Marie Jacquot, Clelia Cafiero, Yi-Chen Li, Matthew Kofi Waldren i Kerem Hasan, entre altres.', 'Com a intèrpret especialitzada en Lied, Blanca Graciá Rodríguez ha actuat en destacats festivals internacionals com l’Oxford Lieder Festival, SongEasel o el Hidalgo Festival de Munic. També ha sigut reconeguda en diversos certàmens, sent finalista en el II Certamen Internacional de Lied i Cançó (Espanya, 2018), en el Concurs Galantes Talanti (Letònia, 2022) i en els Ashburnham English Song Awards (2025), a més d’obtindre el tercer premi en l’International Music Competition France el 2022.', 'Amb esta designació, Elda reconeix el talent, la projecció internacional i l’excel·lència artística d’una música local que aportarà la seua experiència i sensibilitat al pasdoble Idella, donant una nova dimensió a este acte tan esperat i estimat pel públic.']
   }
 };
@@ -712,6 +735,7 @@ buttons.forEach((button) => {
 
 function setLanguage(language) {
   const copy = translations[language];
+  currentLanguage = language;
   document.documentElement.lang = language;
   const navLabels = {
     inicio: copy.nav[0],
