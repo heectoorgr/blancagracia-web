@@ -1,0 +1,18 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/verify-code"
+  to = "/.netlify/functions/verify-code"
+  status = 200
+
+[[redirects]]
+  from = "/api/save-content"
+  to = "/.netlify/functions/save-content"
+  status = 200
+
+[[redirects]]
+  from = "/api/send-alert"
+  to = "/.netlify/functions/send-alert"
+  status = 200

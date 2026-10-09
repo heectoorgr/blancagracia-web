@@ -47,57 +47,92 @@ async function putFile(env, repo, branch, filePath, contentBase64, message) {
   });
 }
 
+const untranslatedKeys = new Set([
+  'dataBase64',
+  'email',
+  'id',
+  'image',
+  'instagram',
+  'link',
+  'linkDisplay',
+  'linkedin',
+  'path',
+  'photos',
+  'scheduleUrl',
+  'videoId',
+  'youtube',
+  'youtubeUrl'
+]);
+
 async function translateText(text, targetLanguage) {
   if (!text) return text || '';
-  try {
-    const url = new URL('https://translate.googleapis.com/translate_a/single');
-    url.searchParams.set('client', 'gtx');
-    url.searchParams.set('sl', 'es');
-    url.searchParams.set('tl', targetLanguage);
-    url.searchParams.set('dt', 't');
-    url.searchParams.set('q', text);
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`El traductor respondió ${response.status}`);
-    const data = await response.json();
-    return Array.isArray(data?.[0]) ? data[0].map((part) => part[0]).join('') : text;
-  } catch (error) {
-    return text;
+  if (/^(?:https?:\/\/|mailto:|tel:)/i.test(text)) return text;
+  const url = new URL('https://translate.googleapis.com/translate_a/single');
+  url.searchParams.set('client', 'gtx');
+  url.searchParams.set('sl', 'auto');
+  url.searchParams.set('tl', targetLanguage);
+  url.searchParams.set('dt', 't');
+  url.searchParams.set('q', text);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`El traductor respondió ${response.status}. No se guardaron los cambios.`);
+  const data = await response.json();
+  if (!Array.isArray(data?.[0])) {
+    throw new Error('El traductor devolvió una respuesta inválida. No se guardaron los cambios.');
   }
+  return data[0].map((part) => part[0]).join('');
 }
 
-async function translateEntries(entries, targetLanguage, fields) {
-  const translatedEntries = [];
-  for (const entry of entries || []) {
-    const translatedEntry = { ...entry };
-    for (const field of fields) {
-      translatedEntry[field] = await translateText(entry[field], targetLanguage);
+function createTextTranslator(targetLanguage) {
+  const queue = [];
+  const cache = new Map();
+  let active = 0;
+
+  const runNext = () => {
+    while (active < 4 && queue.length) {
+      const { text, resolve, reject } = queue.shift();
+      active += 1;
+      translateText(text, targetLanguage).then(resolve, reject).finally(() => {
+        active -= 1;
+        runNext();
+      });
     }
-    translatedEntries.push(translatedEntry);
+  };
+
+  return (text) => {
+    if (!cache.has(text)) {
+      cache.set(text, new Promise((resolve, reject) => {
+        queue.push({ text, resolve, reject });
+        runNext();
+      }));
+    }
+    return cache.get(text);
+  };
+}
+
+async function translateValue(value, translate, parentKey = '', parentParentKey = '') {
+  if (typeof value === 'string') {
+    if (untranslatedKeys.has(parentKey) || (parentKey === 'name' && parentParentKey === 'hero')) return value;
+    return translate(value);
   }
-  return translatedEntries;
+  if (Array.isArray(value)) {
+    return Promise.all(value.map((item) => translateValue(item, translate, parentKey, parentParentKey)));
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(await Promise.all(
+      Object.entries(value)
+        .filter(([key]) => key !== 'translations')
+        .map(async ([key, item]) => [key, await translateValue(item, translate, key, parentKey)])
+    ));
+  }
+  return value;
 }
 
 async function buildTranslations(content) {
-  const targets = { en: 'en', va: 'ca' };
+  const targets = { es: 'es', en: 'en', va: 'ca' };
   const translations = {};
 
   for (const [language, targetLanguage] of Object.entries(targets)) {
-    translations[language] = {
-      hero: {
-        name: content.hero?.name || '',
-        role: await translateText(content.hero?.role || '', targetLanguage)
-      },
-      bio: {
-        paragraphs: await Promise.all((content.bio?.paragraphs || []).map((paragraph) => translateText(paragraph, targetLanguage)))
-      },
-      agenda: {
-        upcoming: await translateEntries(content.agenda?.upcoming || [], targetLanguage, ['linkText', 'type', 'date', 'place', 'description']),
-        previous: await translateEntries(content.agenda?.previous || [], targetLanguage, ['linkText', 'date', 'name', 'place', 'description'])
-      },
-      contact: {
-        intro: await translateText(content.contact?.intro || '', targetLanguage)
-      }
-    };
+    translations[language] = await translateValue(content, createTextTranslator(targetLanguage));
   }
 
   return translations;
@@ -123,11 +158,12 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
+    payload.content.translations = await buildTranslations(payload.content);
+
     for (const image of payload.images || []) {
       await putFile(env, repo, branch, image.path, image.dataBase64, `Subir foto desde el panel: ${image.path}`);
     }
 
-    payload.content.translations = await buildTranslations(payload.content);
     const contentString = JSON.stringify(payload.content, null, 2);
     await putFile(env, repo, branch, 'content.json', base64Encode(contentString), 'Actualizar contenido desde el panel');
 
