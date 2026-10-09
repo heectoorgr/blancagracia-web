@@ -83,6 +83,19 @@ const untranslatedKeys = new Set([
   'youtubeUrl'
 ]);
 
+let nextTranslationRequestAt = 0;
+const TRANSLATION_REQUEST_INTERVAL_MS = 750;
+
+async function requestTranslation(url) {
+  const now = Date.now();
+  const requestAt = Math.max(now, nextTranslationRequestAt);
+  nextTranslationRequestAt = requestAt + TRANSLATION_REQUEST_INTERVAL_MS;
+  if (requestAt > now) {
+    await new Promise((resolve) => setTimeout(resolve, requestAt - now));
+  }
+  return fetch(url);
+}
+
 async function translateText(text, targetLanguage) {
   if (!text) return text || '';
   if (/^(?:https?:\/\/|mailto:|tel:)/i.test(text)) return text;
@@ -94,7 +107,7 @@ async function translateText(text, targetLanguage) {
   url.searchParams.set('q', text);
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await fetch(url);
+    const response = await requestTranslation(url);
     if (response.ok) {
       const data = await response.json();
       if (!Array.isArray(data?.[0])) {
@@ -118,10 +131,10 @@ async function translateText(text, targetLanguage) {
       : Number.isFinite(retryAfterDate)
         ? Math.max(0, retryAfterDate - Date.now())
         : 0;
-    if (retryAfter > 4000) {
+    if (retryAfter > 5000) {
       throw new Error(`El traductor está limitando temporalmente las solicitudes. Espera ${Math.ceil(retryAfter / 1000)} segundos y vuelve a guardar; no se guardaron los cambios.`);
     }
-    const delay = Math.max(retryAfter, 500 * (2 ** attempt));
+    const delay = Math.max(retryAfter, 1000 * (2 ** attempt));
     await new Promise((resolve) => setTimeout(resolve, delay));
   }
 }
