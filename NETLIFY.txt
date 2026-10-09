@@ -5,16 +5,26 @@ Para que la web publica y el panel /admin funcionen:
 1. Sube este proyecto completo a un repositorio Git y conéctalo a Netlify.
    No uses solo la carga manual de archivos estaticos: el admin necesita las
    Netlify Functions incluidas en netlify/functions.
-2. En Netlify, abre Site configuration > Environment variables y configura:
+2. En Azure Portal, crea un recurso Translator y elige el nivel gratuito F0
+   si aparece disponible para tu cuenta y region. Copia Key 1 y la region que
+   muestra Azure para ese recurso. Comprueba alli la cuota y el precio actuales;
+   no elijas un nivel de pago.
+3. En Netlify, abre Site configuration > Environment variables y configura:
    ADMIN_CODE       Codigo privado para entrar al panel.
    GITHUB_TOKEN     Token de GitHub con permiso Contents: read and write.
    GITHUB_REPO      Repositorio destino en formato propietario/repositorio.
    GITHUB_BRANCH    Rama que publica el sitio (opcional; por defecto main).
-3. Comprueba que GITHUB_REPO y GITHUB_BRANCH sean el repositorio y la rama
-   conectados a este sitio de Netlify. Al guardar, el admin traduce el contenido
-   y actualiza content.json mediante GitHub; ese commit activa el nuevo deploy.
-4. Abre /admin, introduce ADMIN_CODE y edita el contenido. El guardado automatico
+   AZURE_TRANSLATOR_KEY     Key 1 secreta del recurso Azure Translator.
+   AZURE_TRANSLATOR_REGION  Region del recurso, tal como aparece en Azure.
+   AZURE_TRANSLATOR_ENDPOINT (opcional; normalmente se deja vacia).
+4. Comprueba que GITHUB_REPO y GITHUB_BRANCH sean el repositorio y la rama
+   conectados a este sitio de Netlify. Azure Translator recibe en lotes solo los
+   textos nuevos o modificados; despues el admin actualiza content.json mediante
+   GitHub y ese commit activa el nuevo deploy.
+5. Abre /admin, introduce ADMIN_CODE y edita el contenido. El guardado automatico
    ocurre unos segundos despues de dejar de escribir.
 
 Las variables anteriores se configuran en Netlify; no las añadas a los archivos
-del ZIP. Despues de configurar o cambiar variables, vuelve a desplegar el sitio.
+del proyecto ni las compartas por chat. El nivel F0 esta sujeto a disponibilidad
+y limites mensuales de Azure. Despues de configurar o cambiar variables, vuelve
+a desplegar el sitio.
