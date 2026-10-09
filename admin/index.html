@@ -42,6 +42,15 @@
   .char-counter{display:block;font-size:11px;color:var(--muted);margin:-6px 0 10px;text-align:right}
   .char-counter.char-limit-reached{color:var(--accent);font-weight:700}
   .translation-note{padding:12px 14px;margin:0 0 20px;background:#fff;border-left:3px solid var(--accent);font-size:13px;line-height:1.5}
+  .language-tabs{display:flex;gap:8px;position:sticky;top:0;z-index:2;margin:0 0 20px;padding:10px 0;background:var(--bg)}
+  .language-tab{flex:1;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font:600 14px "DM Sans",sans-serif;cursor:pointer}
+  .language-tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .language-fields{margin:6px 0 14px}
+  .language-field{padding:9px 10px 2px;background:#f8f7f4;border-left:3px solid #c8b99d;border-radius:4px}
+  .language-field[hidden]{display:none}
+  .language-field label{font-size:12px;font-weight:600;color:var(--muted);margin:0 0 4px}
+  .language-field input,.language-field textarea{margin-bottom:8px}
+  .language-field textarea{min-height:90px}
   @media (max-width: 480px) {
     #panel{padding:16px 14px 90px}
     h2{font-size:13px;margin:28px 0 12px}
@@ -65,20 +74,22 @@
 </div>
 
 <div id="panel">
-  <p class="translation-note">Escribe o modifica los textos en el idioma que prefieras. Los cambios se guardan y se traducen automáticamente a castellano, inglés y valenciano unos segundos después de dejar de escribir; no hace falta pulsar ningún botón. La web puede tardar 1-2 minutos en publicarlos. Los nombres propios y los enlaces se mantienen sin traducir.</p>
+  <p class="translation-note">Elige el idioma y escribe todos sus textos en ese apartado. El nombre principal y los campos comunes (fotos, enlaces, redes y email) se comparten entre idiomas. Los cambios se guardan automáticamente; no se utiliza ningún traductor. La web puede tardar 1-2 minutos en publicar los cambios.</p>
+  <div class="language-tabs" role="tablist" aria-label="Idioma que quieres editar">
+    <button type="button" class="language-tab" role="tab" data-admin-language="va" aria-selected="false">VAL · Valenciano</button>
+    <button type="button" class="language-tab" role="tab" data-admin-language="en" aria-selected="false">EN · English</button>
+    <button type="button" class="language-tab" role="tab" data-admin-language="es" aria-selected="true">ES · Castellano</button>
+  </div>
   <section id="section-hero">
     <h2>Portada</h2>
     <label>Nombre principal</label>
     <input id="heroName" type="text">
-    <label>Texto profesional</label>
-    <input id="heroRole" type="text">
+    <div id="heroRoleFields"></div>
   </section>
 
   <section id="section-bio">
     <h2>Biografía</h2>
-    <label>Texto de la biografía</label>
-    <textarea id="bioText" style="min-height:240px"></textarea>
-    <span class="char-counter" id="bioTextCounter"></span>
+    <div id="bioTextFields"></div>
     <label style="margin-top:18px">Fotos de la biografía</label>
     <div class="device-tabs">
       <button type="button" class="device-tab bio-device-tab active" data-device="pc">PC</button>
@@ -133,9 +144,7 @@
 
   <section id="section-contact">
     <h2>Contacto</h2>
-    <label>Texto de introducción</label>
-    <textarea id="contactIntro"></textarea>
-    <span class="char-counter" id="contactIntroCounter"></span>
+    <div id="contactIntroFields"></div>
     <label>Email de contacto</label>
     <input id="contactEmail" type="email">
     <p style="font-size:12px;color:var(--muted)">El logo de correo de abajo del todo usa este email. Los logos de Instagram, LinkedIn y YouTube de esa misma fila se controlan en el apartado "Redes sociales" de arriba.</p>
@@ -183,6 +192,47 @@ function countCharacters(text) {
   return text.length;
 }
 
+const languageLabels = { es: 'Castellano', en: 'Inglés', va: 'Valenciano' };
+let activeAdminLanguage = 'es';
+
+function applyAdminLanguage(language) {
+  activeAdminLanguage = language;
+  document.querySelectorAll('.language-tab').forEach((tab) => {
+    const selected = tab.dataset.adminLanguage === language;
+    tab.setAttribute('aria-selected', String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+  });
+  document.querySelectorAll('.language-field').forEach((field) => {
+    field.hidden = field.querySelector('[data-language]')?.dataset.language !== language;
+  });
+}
+
+document.querySelectorAll('.language-tab').forEach((tab) => {
+  tab.addEventListener('click', () => applyAdminLanguage(tab.dataset.adminLanguage));
+});
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
+
+function localizedFieldHTML(label, className, values = {}, multiline = false) {
+  return `<div class="localized-field"><label>${label}</label><div class="language-fields">${Object.entries(languageLabels).map(([language, languageLabel]) => (
+    `<div class="language-field"><label>${languageLabel}</label>${multiline
+      ? `<textarea class="${className} lang-${language}" data-language="${language}">${escapeHtml(values[language] || '')}</textarea>`
+      : `<input type="text" class="${className} lang-${language}" data-language="${language}" value="${escapeHtml(values[language] || '')}">`}</div>`
+  )).join('')}</div></div>`;
+}
+
+function readLocalizedField(entry, className, language, fallback = '') {
+  return entry.querySelector(`.${className}[data-language="${language}"]`)?.value ?? fallback;
+}
+
 function attachCharacterLimit(textarea, max, counterEl) {
   const update = () => {
     if (textarea.value.length > max) {
@@ -198,14 +248,14 @@ function attachCharacterLimit(textarea, max, counterEl) {
 
 function setupEventLinkControls(wrap, item = {}) {
   const display = item.linkDisplay || 'custom';
-  const linkTextInput = wrap.querySelector('.f-link-text');
   const displaySelect = wrap.querySelector('.f-link-display');
   wrap.querySelector('.f-link').value = item.link || '';
-  linkTextInput.value = item.linkText || '';
   displaySelect.value = display === 'raw' ? 'raw' : 'custom';
   const updateTextState = () => {
-    linkTextInput.disabled = displaySelect.value === 'raw';
-    linkTextInput.placeholder = displaySelect.value === 'raw' ? 'Se mostrará el link completo' : 'Texto visible del enlace';
+    wrap.querySelectorAll('.f-link-text').forEach((input) => {
+      input.disabled = displaySelect.value === 'raw';
+      input.placeholder = displaySelect.value === 'raw' ? 'Se mostrará el link completo' : 'Texto visible del enlace';
+    });
   };
   displaySelect.addEventListener('change', updateTextState);
   updateTextState();
@@ -241,61 +291,67 @@ function addPhotoEntry(container, currentPath) {
   });
   makeRemovable(null, wrap);
   container.append(wrap);
+  applyAdminLanguage(activeAdminLanguage);
+  applyAdminLanguage(activeAdminLanguage);
   refreshBioPhotoBadges();
 }
 
-function addUpcomingEntry(item = {}) {
+function addUpcomingEntry(item = {}, localized = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'entry';
   wrap.innerHTML =
     '<label>Enlace (opcional)</label><input type="url" class="f-link">' +
     '<label>Cómo mostrar el enlace (opcional, solo si hay enlace)</label><select class="f-link-display"><option value="custom">Cartel personalizado</option><option value="raw">Link en bruto subrayado</option></select>' +
-    '<label>Texto del cartel personalizado (opcional)</label><input type="text" class="f-link-text">' +
-    '<label>Tipo de trabajo</label><input type="text" class="f-type">' +
-    '<label>Fecha o fechas</label><input type="text" class="f-date">' +
-    '<label>Lugar</label><input type="text" class="f-place">' +
-    '<label>Descripción</label><textarea class="f-description"></textarea><span class="char-counter"></span>';
+    localizedFieldHTML('Texto del cartel personalizado (opcional)', 'f-link-text', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.linkText ?? item.linkText])) ) +
+    localizedFieldHTML('Tipo de trabajo', 'f-type', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.type ?? item.type]))) +
+    localizedFieldHTML('Fecha o fechas', 'f-date', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.date ?? item.date]))) +
+    localizedFieldHTML('Lugar', 'f-place', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.place ?? item.place]))) +
+    localizedFieldHTML('Descripción', 'f-description', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.description ?? item.description])), true);
   setupEventLinkControls(wrap, item);
-  wrap.querySelector('.f-type').value = item.type || '';
-  wrap.querySelector('.f-date').value = item.date || '';
-  wrap.querySelector('.f-place').value = item.place || '';
-  wrap.querySelector('.f-description').value = item.description || '';
-  attachCharacterLimit(wrap.querySelector('.f-description'), 320, wrap.querySelector('.char-counter'));
+  wrap.querySelectorAll('.f-description').forEach((textarea) => {
+    const counter = document.createElement('span');
+    counter.className = 'char-counter';
+    textarea.after(counter);
+    attachCharacterLimit(textarea, 320, counter);
+  });
   makeRemovable(null, wrap);
   document.getElementById('upcomingList').append(wrap);
+  applyAdminLanguage(activeAdminLanguage);
 }
 
-function addPreviousEntry(item = {}) {
+function addPreviousEntry(item = {}, localized = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'entry';
   wrap.innerHTML =
     '<label>Enlace (opcional)</label><input type="url" class="f-link">' +
     '<label>Cómo mostrar el enlace (opcional, solo si hay enlace)</label><select class="f-link-display"><option value="custom">Cartel personalizado</option><option value="raw">Link en bruto subrayado</option></select>' +
-    '<label>Texto del cartel personalizado (opcional)</label><input type="text" class="f-link-text">' +
-    '<label>Fecha</label><input type="text" class="f-date">' +
-    '<label>Nombre del evento</label><input type="text" class="f-name">' +
-    '<label>Lugar</label><input type="text" class="f-place">' +
-    '<label>Descripción breve</label><textarea class="f-description"></textarea><span class="char-counter"></span>';
+    localizedFieldHTML('Texto del cartel personalizado (opcional)', 'f-link-text', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.linkText ?? item.linkText]))) +
+    localizedFieldHTML('Fecha', 'f-date', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.date ?? item.date]))) +
+    localizedFieldHTML('Nombre del evento', 'f-name', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.name ?? item.name]))) +
+    localizedFieldHTML('Lugar', 'f-place', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.place ?? item.place]))) +
+    localizedFieldHTML('Descripción breve', 'f-description', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.description ?? item.description])), true);
   setupEventLinkControls(wrap, item);
-  wrap.querySelector('.f-date').value = item.date || '';
-  wrap.querySelector('.f-name').value = item.name || '';
-  wrap.querySelector('.f-place').value = item.place || '';
-  wrap.querySelector('.f-description').value = item.description || '';
-  attachCharacterLimit(wrap.querySelector('.f-description'), 240, wrap.querySelector('.char-counter'));
+  wrap.querySelectorAll('.f-description').forEach((textarea) => {
+    const counter = document.createElement('span');
+    counter.className = 'char-counter';
+    textarea.after(counter);
+    attachCharacterLimit(textarea, 240, counter);
+  });
   makeRemovable(null, wrap);
   document.getElementById('previousList').append(wrap);
+  applyAdminLanguage(activeAdminLanguage);
 }
 
-function addAuditionEntry(item = {}) {
+function addAuditionEntry(item = {}, localized = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'entry';
   wrap.innerHTML =
-    '<label>Título</label><input type="text" class="f-title">' +
+    localizedFieldHTML('Título', 'f-title', Object.fromEntries(Object.keys(languageLabels).map((language) => [language, localized[language]?.title ?? item.title]))) +
     '<label>Enlace de YouTube</label><input type="url" class="f-url">';
-  wrap.querySelector('.f-title').value = item.title || '';
   wrap.querySelector('.f-url').value = item.youtubeUrl || '';
   makeRemovable(null, wrap);
   document.getElementById('auditionsList').append(wrap);
+  applyAdminLanguage(activeAdminLanguage);
 }
 
 function addGalleryEntry(item = {}, container) {
@@ -304,8 +360,12 @@ function addGalleryEntry(item = {}, container) {
   wrap.dataset.currentPath = item.image || '';
   wrap.dataset.alt = item.alt || '';
   wrap.innerHTML = '<img class="photo-preview">' +
-    '<input type="file" accept="image/*" class="photo-input">';
+    '<input type="file" accept="image/*" class="photo-input">' +
+    localizedFieldHTML('Texto alternativo', 'f-alt', item.altTranslations || { es: item.alt, en: item.alt, va: item.alt });
   wrap.querySelector('img').src = toImageUrl(item.image);
+  wrap.querySelectorAll('.f-alt').forEach((input) => {
+    input.value = item.altTranslations?.[input.dataset.language] ?? item.alt ?? '';
+  });
   wrap.querySelector('.photo-input').addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -321,59 +381,108 @@ function addGalleryEntry(item = {}, container) {
 }
 
 function renderContent(content) {
+  const translations = content.translations || {};
   document.getElementById('heroName').value = content.hero?.name || 'Blanca Graciá';
-  document.getElementById('heroRole').value = content.hero?.role || 'Pianist, Repetiteur, Vocal Coach';
-  document.getElementById('bioText').value = (content.bio?.paragraphs || []).join('\n\n');
-  attachCharacterLimit(document.getElementById('bioText'), 2500, document.getElementById('bioTextCounter'));
+  document.getElementById('heroRoleFields').innerHTML = localizedFieldHTML('Texto profesional', 'f-hero-role', {
+    es: content.hero?.role || 'Pianist, Repetiteur, Vocal Coach',
+    en: translations.en?.hero?.role || '',
+    va: translations.va?.hero?.role || ''
+  });
+  const bioLanguages = Object.fromEntries(['es', 'en', 'va'].map((language) => [
+    language,
+    ((language === 'es' ? content.bio?.paragraphs : translations[language]?.bio?.paragraphs)
+      || content.bio?.paragraphs || []).join('\n\n')
+  ]));
+  document.getElementById('bioTextFields').innerHTML = localizedFieldHTML('Texto de la biografía', 'f-bio-text', bioLanguages, true);
+  document.querySelectorAll('.f-bio-text').forEach((textarea) => {
+    const counter = document.createElement('span');
+    counter.className = 'char-counter';
+    textarea.after(counter);
+    attachCharacterLimit(textarea, 2500, counter);
+  });
   (content.bio?.photos || []).forEach((path) => addPhotoEntry(document.getElementById('bioPhotos'), path));
   refreshBioPhotoBadges();
   document.getElementById('scheduleUrl').value = content.agenda?.scheduleUrl || '';
-  (content.agenda?.upcoming || []).forEach(addUpcomingEntry);
-  (content.agenda?.previous || []).forEach(addPreviousEntry);
+  (content.agenda?.upcoming || []).forEach((item, index) => addUpcomingEntry(item, {
+    en: translations.en?.agenda?.upcoming?.[index],
+    va: translations.va?.agenda?.upcoming?.[index]
+  }));
+  (content.agenda?.previous || []).forEach((item, index) => addPreviousEntry(item, {
+    en: translations.en?.agenda?.previous?.[index],
+    va: translations.va?.agenda?.previous?.[index]
+  }));
   document.getElementById('socialInstagram').value = content.social?.instagram || '';
   document.getElementById('socialLinkedin').value = content.social?.linkedin || '';
   document.getElementById('socialYoutube').value = content.social?.youtube || '';
-  (content.auditions || []).forEach(addAuditionEntry);
-  (content.gallery?.mobile || []).forEach((item) => addGalleryEntry(item, document.getElementById('galleryListMovil')));
-  (content.gallery?.desktop || []).forEach((item) => addGalleryEntry(item, document.getElementById('galleryListPc')));
-  document.getElementById('contactIntro').value = content.contact?.intro || '';
-  attachCharacterLimit(document.getElementById('contactIntro'), 360, document.getElementById('contactIntroCounter'));
+  (content.auditions || []).forEach((item, index) => addAuditionEntry(item, {
+    en: translations.en?.auditions?.[index],
+    va: translations.va?.auditions?.[index]
+  }));
+  (content.gallery?.mobile || []).forEach((item, index) => addGalleryEntry({
+    ...item,
+    altTranslations: {
+      es: item.alt,
+      en: translations.en?.gallery?.mobile?.[index]?.alt,
+      va: translations.va?.gallery?.mobile?.[index]?.alt
+    }
+  }, document.getElementById('galleryListMovil')));
+  (content.gallery?.desktop || []).forEach((item, index) => addGalleryEntry({
+    ...item,
+    altTranslations: {
+      es: item.alt,
+      en: translations.en?.gallery?.desktop?.[index]?.alt,
+      va: translations.va?.gallery?.desktop?.[index]?.alt
+    }
+  }, document.getElementById('galleryListPc')));
+  document.getElementById('contactIntroFields').innerHTML = localizedFieldHTML('Texto de introducción', 'f-contact-intro', {
+    es: content.contact?.intro || '',
+    en: translations.en?.contact?.intro || '',
+    va: translations.va?.contact?.intro || ''
+  }, true);
+  document.querySelectorAll('.f-contact-intro').forEach((textarea) => {
+    const counter = document.createElement('span');
+    counter.className = 'char-counter';
+    textarea.after(counter);
+    attachCharacterLimit(textarea, 360, counter);
+  });
   document.getElementById('contactEmail').value = content.contact?.email || '';
+  applyAdminLanguage(activeAdminLanguage);
 }
 
 function collectContent() {
-  const bioParagraphs = document.getElementById('bioText').value.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const readBio = (language) => readLocalizedField(document, 'f-bio-text', language)
+    .split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const bioPhotos = [...document.querySelectorAll('#bioPhotos .entry')].map((el) => el.dataset.currentPath).filter(Boolean);
   const upcoming = [...document.querySelectorAll('#upcomingList .entry')].map((el) => ({
     link: el.querySelector('.f-link').value,
     linkDisplay: el.querySelector('.f-link-display').value,
-    linkText: el.querySelector('.f-link-text').value,
-    type: el.querySelector('.f-type').value,
-    date: el.querySelector('.f-date').value,
-    place: el.querySelector('.f-place').value,
-    description: el.querySelector('.f-description').value
+    linkText: readLocalizedField(el, 'f-link-text', 'es'),
+    type: readLocalizedField(el, 'f-type', 'es'),
+    date: readLocalizedField(el, 'f-date', 'es'),
+    place: readLocalizedField(el, 'f-place', 'es'),
+    description: readLocalizedField(el, 'f-description', 'es')
   }));
   const previous = [...document.querySelectorAll('#previousList .entry')].map((el) => ({
     link: el.querySelector('.f-link').value,
     linkDisplay: el.querySelector('.f-link-display').value,
-    linkText: el.querySelector('.f-link-text').value,
-    date: el.querySelector('.f-date').value,
-    name: el.querySelector('.f-name').value,
-    place: el.querySelector('.f-place').value,
-    description: el.querySelector('.f-description').value
+    linkText: readLocalizedField(el, 'f-link-text', 'es'),
+    date: readLocalizedField(el, 'f-date', 'es'),
+    name: readLocalizedField(el, 'f-name', 'es'),
+    place: readLocalizedField(el, 'f-place', 'es'),
+    description: readLocalizedField(el, 'f-description', 'es')
   }));
   const auditions = [...document.querySelectorAll('#auditionsList .entry')].map((el) => ({
-    title: el.querySelector('.f-title').value,
+    title: readLocalizedField(el, 'f-title', 'es'),
     youtubeUrl: el.querySelector('.f-url').value
   }));
   const gallery = {
     mobile: [...document.querySelectorAll('#galleryListMovil .entry')].map((el) => ({
       image: el.dataset.currentPath,
-      alt: el.dataset.alt || ''
+      alt: readLocalizedField(el, 'f-alt', 'es')
     })),
     desktop: [...document.querySelectorAll('#galleryListPc .entry')].map((el) => ({
       image: el.dataset.currentPath,
-      alt: el.dataset.alt || ''
+      alt: readLocalizedField(el, 'f-alt', 'es')
     }))
   };
   const images = [];
@@ -384,9 +493,9 @@ function collectContent() {
   const content = {
     hero: {
       name: document.getElementById('heroName').value,
-      role: document.getElementById('heroRole').value
+      role: readLocalizedField(document, 'f-hero-role', 'es')
     },
-    bio: { paragraphs: bioParagraphs, photos: bioPhotos },
+    bio: { paragraphs: readBio('es'), photos: bioPhotos },
     agenda: {
       scheduleUrl: document.getElementById('scheduleUrl').value,
       upcoming,
@@ -400,11 +509,82 @@ function collectContent() {
     auditions,
     gallery,
     contact: {
-      intro: document.getElementById('contactIntro').value,
+      intro: readLocalizedField(document, 'f-contact-intro', 'es'),
       email: document.getElementById('contactEmail').value
     }
   };
 
+  const localizedAgenda = (selector, sourceItems, fields, language) => (
+    [...document.querySelectorAll(selector)].map((entry, index) => ({
+      ...sourceItems[index],
+      ...Object.fromEntries(fields.map((field) => [
+        field,
+        readLocalizedField(entry, `f-${field.replace(/[A-Z]/g, (character) => `-${character.toLowerCase()}`)}`, language)
+      ]))
+    }))
+  );
+  content.translations = {
+    en: {
+      hero: { role: readLocalizedField(document, 'f-hero-role', 'en') },
+      bio: { paragraphs: readBio('en') },
+      agenda: {
+        upcoming: localizedAgenda('#upcomingList .entry', upcoming, ['linkText', 'type', 'date', 'place', 'description'], 'en'),
+        previous: localizedAgenda('#previousList .entry', previous, ['linkText', 'date', 'name', 'place', 'description'], 'en')
+      },
+      auditions: [...document.querySelectorAll('#auditionsList .entry')].map((entry, index) => ({
+        ...auditions[index],
+        title: readLocalizedField(entry, 'f-title', 'en')
+      })),
+      gallery: {
+        mobile: [...document.querySelectorAll('#galleryListMovil .entry')].map((entry, index) => ({
+          ...gallery.mobile[index],
+          alt: readLocalizedField(entry, 'f-alt', 'en')
+        })),
+        desktop: [...document.querySelectorAll('#galleryListPc .entry')].map((entry, index) => ({
+          ...gallery.desktop[index],
+          alt: readLocalizedField(entry, 'f-alt', 'en')
+        }))
+      },
+      contact: { intro: readLocalizedField(document, 'f-contact-intro', 'en') }
+    },
+    va: {
+      hero: { role: readLocalizedField(document, 'f-hero-role', 'va') },
+      bio: { paragraphs: readBio('va') },
+      agenda: {
+        upcoming: [...document.querySelectorAll('#upcomingList .entry')].map((entry, index) => ({
+          ...upcoming[index],
+          linkText: readLocalizedField(entry, 'f-link-text', 'va'),
+          type: readLocalizedField(entry, 'f-type', 'va'),
+          date: readLocalizedField(entry, 'f-date', 'va'),
+          place: readLocalizedField(entry, 'f-place', 'va'),
+          description: readLocalizedField(entry, 'f-description', 'va')
+        })),
+        previous: [...document.querySelectorAll('#previousList .entry')].map((entry, index) => ({
+          ...previous[index],
+          linkText: readLocalizedField(entry, 'f-link-text', 'va'),
+          date: readLocalizedField(entry, 'f-date', 'va'),
+          name: readLocalizedField(entry, 'f-name', 'va'),
+          place: readLocalizedField(entry, 'f-place', 'va'),
+          description: readLocalizedField(entry, 'f-description', 'va')
+        }))
+      },
+      auditions: [...document.querySelectorAll('#auditionsList .entry')].map((entry, index) => ({
+        ...auditions[index],
+        title: readLocalizedField(entry, 'f-title', 'va')
+      })),
+      gallery: {
+        mobile: [...document.querySelectorAll('#galleryListMovil .entry')].map((entry, index) => ({
+          ...gallery.mobile[index],
+          alt: readLocalizedField(entry, 'f-alt', 'va')
+        })),
+        desktop: [...document.querySelectorAll('#galleryListPc .entry')].map((entry, index) => ({
+          ...gallery.desktop[index],
+          alt: readLocalizedField(entry, 'f-alt', 'va')
+        }))
+      },
+      contact: { intro: readLocalizedField(document, 'f-contact-intro', 'va') }
+    }
+  };
   return { content, images };
 }
 
@@ -449,7 +629,7 @@ let saveRequested = false;
 function scheduleAutosave() {
   const statusEl = document.getElementById('status');
   statusEl.className = '';
-  statusEl.textContent = 'Cambios pendientes; se guardarán y traducirán automáticamente…';
+  statusEl.textContent = 'Cambios pendientes; se guardarán automáticamente…';
   window.clearTimeout(autosaveTimer);
   autosaveTimer = window.setTimeout(() => saveContent(), 1500);
 }
@@ -465,7 +645,7 @@ async function saveContent() {
   try {
     do {
       saveRequested = false;
-      statusEl.textContent = 'Guardando y traduciendo a los tres idiomas…';
+      statusEl.textContent = 'Guardando los textos en los tres idiomas…';
       const { content, images } = collectContent();
       const res = await fetch('/api/save-content', {
         method: 'POST',
@@ -479,7 +659,7 @@ async function saveContent() {
       });
     } while (saveRequested);
     statusEl.className = 'ok';
-    statusEl.textContent = 'Guardado y traducido a castellano, inglés y valenciano. La web se actualizará en 1-2 minutos.';
+    statusEl.textContent = 'Guardado en castellano, inglés y valenciano. La web se actualizará en 1-2 minutos.';
   } catch (error) {
     statusEl.className = 'err';
     statusEl.textContent = 'No se pudo guardar: ' + error.message;

@@ -347,16 +347,12 @@ const getLocalizedContent = (language) => {
     hero: {
       ...siteContent.hero,
       name: translated?.hero?.name || siteContent.hero?.name || defaultHero.name,
-      role: translated?.hero?.role || (language === 'es' ? translations.es.role : siteContent.hero?.role) || defaultHero.role
+      role: translated?.hero?.role || siteContent.hero?.role || (language === 'es' ? translations.es.role : '') || defaultHero.role
     },
     bio: {
       ...siteContent.bio,
       paragraphs: translatedBio?.length
-        ? translatedBio.map((paragraph, index) => (
-          language !== 'es' && paragraph === sourceBio[index]
-            ? (translations[language].aboutBio[index] || paragraph)
-            : paragraph
-        ))
+        ? translatedBio
         : sourceBio
     },
     agenda: {
@@ -837,7 +833,7 @@ function setLanguage(language) {
     if (!item.hidden) item.textContent = aboutParagraphs[index];
   });
   const headerRole = document.querySelector('.header-role');
-  if (headerRole) headerRole.textContent = copy.role;
+  if (headerRole) headerRole.textContent = localizedContent.hero.role || copy.role;
   const profileTitle = document.querySelector('.profile-overlay h1');
   if (profileTitle) profileTitle.textContent = `${localizedContent.hero.name} | ${localizedContent.hero.role || copy.role}`;
   if (horizontalHeading) horizontalHeading.textContent = localizedContent.hero.role || copy.role;

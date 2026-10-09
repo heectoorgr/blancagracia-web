@@ -11,8 +11,9 @@ Para que la web publica y el panel /admin funcionen:
    GITHUB_REPO      Repositorio destino en formato propietario/repositorio.
    GITHUB_BRANCH    Rama que publica el sitio (opcional; por defecto main).
 3. Comprueba que GITHUB_REPO y GITHUB_BRANCH sean el repositorio y la rama
-   conectados a este sitio de Netlify. Al guardar, el admin traduce el contenido
-   y actualiza content.json mediante GitHub; ese commit activa el nuevo deploy.
+   conectados a este sitio de Netlify. En el panel se escriben manualmente los
+   textos en castellano, inglés y valenciano; al guardar, se actualiza
+   content.json mediante GitHub y ese commit activa el nuevo deploy.
 4. Abre /admin, introduce ADMIN_CODE y edita el contenido. El guardado automatico
    ocurre unos segundos despues de dejar de escribir.
 
