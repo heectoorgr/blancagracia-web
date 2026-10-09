@@ -1,7 +1,7 @@
 {
   "hero": {
     "name": "Blanca Graciá ",
-    "role": "Pianista, Repetidora y Coach Vocal"
+    "role": "PRUEBA TEMP ES"
   },
   "bio": {
     "paragraphs": [
@@ -132,8 +132,7 @@
   "translations": {
     "en": {
       "hero": {
-        "name": "Blanca Graciá ",
-        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
+        "role": "TEMP TEST EN"
       },
       "bio": {
         "paragraphs": [
@@ -202,14 +201,57 @@
           }
         ]
       },
+      "auditions": [
+        {
+          "title": "Audición 1",
+          "youtubeUrl": "https://youtu.be/GKI2NcM75Xw"
+        },
+        {
+          "title": "Audición 2",
+          "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
+        }
+      ],
+      "gallery": {
+        "mobile": [
+          {
+            "image": "images/collage /Blanca_Color-3.jpg",
+            "alt": "Blanca Graciá, fotografía en color 3"
+          },
+          {
+            "image": "images/collage /Blanca_Color-6.jpg",
+            "alt": "Blanca Graciá, fotografía en color 6"
+          },
+          {
+            "image": "images/collage /Blanca_Color-11.jpg",
+            "alt": "Blanca Graciá, fotografía en color 11"
+          },
+          {
+            "image": "images/esta-tambien.jpeg",
+            "alt": "Blanca Graciá en una actuación"
+          },
+          {
+            "image": "images/Example02.jpg",
+            "alt": "Blanca Graciá al piano"
+          }
+        ],
+        "desktop": [
+          {
+            "image": "images/Example01.jpg",
+            "alt": "Example 01"
+          },
+          {
+            "image": "images/Example02.jpg",
+            "alt": "Example 02"
+          }
+        ]
+      },
       "contact": {
         "intro": "¿Tienes una idea, una propuesta o simplemente quieres saludar? Puedes escribirme mediante este formulario."
       }
     },
     "va": {
       "hero": {
-        "name": "Blanca Graciá ",
-        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
+        "role": "PROVA TEMP VA"
       },
       "bio": {
         "paragraphs": [
@@ -275,6 +317,50 @@
             "name": "[Nombre del evento]",
             "place": "[Lugar]",
             "description": "[Descripción breve del evento]"
+          }
+        ]
+      },
+      "auditions": [
+        {
+          "title": "Audición 1",
+          "youtubeUrl": "https://youtu.be/GKI2NcM75Xw"
+        },
+        {
+          "title": "Audición 2",
+          "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
+        }
+      ],
+      "gallery": {
+        "mobile": [
+          {
+            "image": "images/collage /Blanca_Color-3.jpg",
+            "alt": "Blanca Graciá, fotografía en color 3"
+          },
+          {
+            "image": "images/collage /Blanca_Color-6.jpg",
+            "alt": "Blanca Graciá, fotografía en color 6"
+          },
+          {
+            "image": "images/collage /Blanca_Color-11.jpg",
+            "alt": "Blanca Graciá, fotografía en color 11"
+          },
+          {
+            "image": "images/esta-tambien.jpeg",
+            "alt": "Blanca Graciá en una actuación"
+          },
+          {
+            "image": "images/Example02.jpg",
+            "alt": "Blanca Graciá al piano"
+          }
+        ],
+        "desktop": [
+          {
+            "image": "images/Example01.jpg",
+            "alt": "Example 01"
+          },
+          {
+            "image": "images/Example02.jpg",
+            "alt": "Example 02"
           }
         ]
       },
