@@ -76,7 +76,7 @@ body{
   background:linear-gradient(rgba(10,5,5,.45),rgba(10,5,5,.72));
 }
 .schedule-copy-panel{
-  background:#140808 url("images/Blanca_Color-6.jpg") center/cover no-repeat!important;
+  background:#140808 url("images/optimized/Blanca_Color-6.jpg") center/cover no-repeat!important;
 }
 .schedule-copy-panel:before{
   background:linear-gradient(135deg,rgba(10,5,5,.86),rgba(196,46,58,.28));

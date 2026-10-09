@@ -7,7 +7,18 @@ try {
   console.warn('No se pudo cargar content.json, se usará el contenido por defecto.', error);
 }
 
-const toImageUrl = (path) => path.split('/').map(encodeURIComponent).join('/');
+const optimizedImagePaths = new Map([
+  ['images/Blanca_Color-6.jpg', 'images/optimized/Blanca_Color-6.jpg'],
+  ['images/ESTA SEGURO.JPG', 'images/optimized/ESTA SEGURO.jpg'],
+  ['images/Example01.jpg', 'images/optimized/Example01.jpg'],
+  ['images/Example02.jpg', 'images/optimized/Example02.jpg'],
+  ['images/NOS C.jpg', 'images/optimized/NOS C.jpg'],
+  ['images/collage /Blanca_Color-11.jpg', 'images/optimized/collage /Blanca_Color-11.jpg'],
+  ['images/collage /Blanca_Color-12.jpg', 'images/optimized/collage /Blanca_Color-12.jpg'],
+  ['images/collage /Blanca_Color-3.jpg', 'images/optimized/collage /Blanca_Color-3.jpg'],
+  ['images/collage /Blanca_Color-6.jpg', 'images/optimized/collage /Blanca_Color-6.jpg']
+]);
+const toImageUrl = (path) => (optimizedImagePaths.get(path) || path).split('/').map(encodeURIComponent).join('/');
 const getYouTubeId = (url) => {
   const match = (url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
   return match ? match[1] : null;
@@ -53,6 +64,8 @@ aboutPhotoSources.forEach((imageSource) => {
   const image = document.createElement('img');
   image.src = imageSource;
   image.alt = 'Blanca Graciá Rodríguez';
+  image.loading = 'lazy';
+  image.decoding = 'async';
   figure.append(image);
   aboutPhotos.append(figure);
 });
@@ -65,7 +78,7 @@ const collageUrl = (fileName) => fileName === 'NOS C.jpg' ? 'images/NOS%20C.jpg'
 const homeCollages = document.createElement('div');
 homeCollages.className = 'home-collages';
 homeCollages.hidden = true;
-homeCollages.innerHTML = Object.entries(collageImages).map(([orientation, files]) => `<section class="home-collage"><h3>${orientation === 'horizontal' ? 'Pianista, Repetidora y Coach Vocal' : ''}</h3><div class="collage-grid collage-grid-${orientation}">${files.map((fileName) => `<figure><img src="${collageUrl(fileName)}" alt="" loading="lazy"></figure>`).join('')}</div></section>`).join('');
+homeCollages.innerHTML = Object.entries(collageImages).map(([orientation, files]) => `<section class="home-collage"><h3>${orientation === 'horizontal' ? 'Pianista, Repetidora y Coach Vocal' : ''}</h3><div class="collage-grid collage-grid-${orientation}">${files.map((fileName) => `<figure><img src="${collageUrl(fileName)}" alt="" loading="lazy" decoding="async"></figure>`).join('')}</div></section>`).join('');
 const horizontalGrid = homeCollages.querySelector('.collage-grid-horizontal');
 const horizontalHeading = homeCollages.querySelector('.home-collage h3');
 const toggleHorizontalPhotos = () => {
@@ -87,7 +100,7 @@ collageTrigger.remove();
 const verticalCollages = document.createElement('div');
 verticalCollages.className = 'home-collages vertical-collages';
 verticalCollages.hidden = true;
-verticalCollages.innerHTML = `<section class="home-collage"><h3>Verticales</h3><div class="collage-grid collage-grid-vertical">${verticalImages.map((fileName) => `<figure><img src="${collageUrl(fileName)}" alt="" loading="lazy"></figure>`).join('')}</div></section>`;
+verticalCollages.innerHTML = `<section class="home-collage"><h3>Verticales</h3><div class="collage-grid collage-grid-vertical">${verticalImages.map((fileName) => `<figure><img src="${collageUrl(fileName)}" alt="" loading="lazy" decoding="async"></figure>`).join('')}</div></section>`;
 const verticalTrigger = document.createElement('button');
 verticalTrigger.className = 'home-collage-trigger vertical-trigger';
 verticalTrigger.type = 'button';
@@ -327,22 +340,32 @@ if (auditionsDot && auditionsSection && socialPanel) {
 }
 
 const getLocalizedContent = (language) => {
-  const translated = language === 'es' ? null : siteContent.translations?.[language];
+  const translated = siteContent.translations?.[language];
+  const sourceBio = siteContent.bio?.paragraphs || [];
+  const translatedBio = translated?.bio?.paragraphs;
   return {
     hero: {
       ...siteContent.hero,
       name: translated?.hero?.name || siteContent.hero?.name || defaultHero.name,
-      role: translated?.hero?.role || siteContent.hero?.role || defaultHero.role
+      role: translated?.hero?.role || (language === 'es' ? translations.es.role : siteContent.hero?.role) || defaultHero.role
     },
     bio: {
       ...siteContent.bio,
-      paragraphs: translated?.bio?.paragraphs || siteContent.bio?.paragraphs
+      paragraphs: translatedBio?.length
+        ? translatedBio.map((paragraph, index) => (
+          language !== 'es' && paragraph === sourceBio[index]
+            ? (translations[language].aboutBio[index] || paragraph)
+            : paragraph
+        ))
+        : sourceBio
     },
     agenda: {
       ...siteContent.agenda,
       upcoming: translated?.agenda?.upcoming || siteContent.agenda?.upcoming,
       previous: translated?.agenda?.previous || siteContent.agenda?.previous
     },
+    auditions: translated?.auditions || siteContent.auditions,
+    gallery: translated?.gallery || siteContent.gallery,
     contact: {
       ...siteContent.contact,
       intro: translated?.contact?.intro || siteContent.contact?.intro
@@ -461,7 +484,7 @@ const galleryPhotos = isDesktopViewport
 const gallerySection = document.createElement('section');
 gallerySection.className = 'content-panel gallery-section';
 gallerySection.classList.add('gallery-section');
-gallerySection.innerHTML = `<div class="gallery-heading"><h3>Audiciones</h3><button class="gallery-next" type="button" aria-label="Siguiente collage">→</button><span class="gallery-page-indicator">1/2</span></div><div class="gallery-page gallery-page-one"><div class="gallery-grid">${auditions.map((item) => `<figure class="gallery-item"><a class="audition-link" href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${item.videoId}/maxresdefault.jpg" alt="${item.title}"></a></figure>`).join('')}</div></div><div class="gallery-page gallery-page-two" hidden><button class="gallery-back" type="button">← Volver a audiciones</button><div class="gallery-grid">${galleryPhotos.map((photo) => `<figure class="gallery-item"><img src="${toImageUrl(photo.image)}" alt="${photo.alt || ''}"></figure>`).join('')}</div></div>`;
+gallerySection.innerHTML = `<div class="gallery-heading"><h3>Audiciones</h3><button class="gallery-next" type="button" aria-label="Siguiente collage">→</button><span class="gallery-page-indicator">1/2</span></div><div class="gallery-page gallery-page-one"><div class="gallery-grid">${auditions.map((item) => `<figure class="gallery-item"><a class="audition-link" href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${item.videoId}/maxresdefault.jpg" alt="${item.title}" loading="lazy" decoding="async"></a></figure>`).join('')}</div></div><div class="gallery-page gallery-page-two" hidden><button class="gallery-back" type="button">← Volver a audiciones</button><div class="gallery-grid">${galleryPhotos.map((photo) => `<figure class="gallery-item"><img src="${toImageUrl(photo.image)}" alt="${photo.alt || ''}" loading="lazy" decoding="async"></figure>`).join('')}</div></div>`;
 const galleryPageOne = gallerySection.querySelector('.gallery-page-one');
 const galleryPageTwo = gallerySection.querySelector('.gallery-page-two');
 const galleryNext = gallerySection.querySelector('.gallery-next');
@@ -592,7 +615,7 @@ const defaultPrevious = [
 const previousItems = siteContent.agenda?.previous?.length ? siteContent.agenda.previous : defaultPrevious;
 const previousEvents = document.createElement('section');
 previousEvents.className = 'previous-events-card';
-previousEvents.innerHTML = '<img class="previous-events-photo" src="images/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación"><h4>Eventos anteriores</h4><div class="previous-events-list"></div>';
+previousEvents.innerHTML = '<img class="previous-events-photo" src="images/optimized/NOS%20C.jpg" alt="Blanca Graciá Rodríguez durante una actuación" loading="lazy" decoding="async"><h4>Eventos anteriores</h4><div class="previous-events-list"></div>';
 const renderPreviousEvents = (items, language = currentLanguage) => {
   previousEvents.querySelector('.previous-events-list').innerHTML = items.map((item) => `<article>${eventLinkHTML(item, language)}${item.date ? `<time>${item.date}</time>` : ''}${item.name ? `<strong>${item.name}</strong>` : ''}${item.place ? `<span>${item.place}</span>` : ''}${item.description ? `<p>${item.description}</p>` : ''}</article>`).join('');
 };
@@ -809,11 +832,36 @@ function setLanguage(language) {
   });
   const about = document.querySelector('[data-content="sobre-mi"]');
   const aboutParagraphs = localizedContent.bio.paragraphs?.length ? localizedContent.bio.paragraphs : copy.aboutBio;
-  about.querySelectorAll('.about-intro > p:not(.panel-kicker)').forEach((item, index) => { item.textContent = aboutParagraphs[index] || ''; });
+  about.querySelectorAll('.about-intro > p:not(.panel-kicker)').forEach((item, index) => {
+    item.hidden = index >= aboutParagraphs.length;
+    if (!item.hidden) item.textContent = aboutParagraphs[index];
+  });
   const headerRole = document.querySelector('.header-role');
   if (headerRole) headerRole.textContent = copy.role;
   const profileTitle = document.querySelector('.profile-overlay h1');
   if (profileTitle) profileTitle.textContent = `${localizedContent.hero.name} | ${localizedContent.hero.role || copy.role}`;
+  if (horizontalHeading) horizontalHeading.textContent = localizedContent.hero.role || copy.role;
+  const localizedAuditions = (localizedContent.auditions?.length ? localizedContent.auditions : defaultAuditions)
+    .map((item, index) => {
+      const genericTitle = /^(audici[oó]n|gravaci[oó]|recording)\s+\d+$/i.test(item.title || '');
+      const itemLabel = language === 'en' ? 'Recording' : language === 'va' ? 'Gravació' : 'Grabación';
+      return {
+        ...item,
+        title: genericTitle ? `${itemLabel} ${index + 1}` : item.title,
+        videoId: getYouTubeId(item.youtubeUrl)
+      };
+    })
+    .filter((item) => item.videoId);
+  if (auditionsGrid) {
+    auditionsGrid.innerHTML = localizedAuditions.map((item, index) => `<a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg" alt="${escapeHTML(item.title || `${copy.auditionsTitle} ${index + 1}`)}"><span>${escapeHTML(item.title || `${copy.auditionsTitle} ${index + 1}`)}</span></a>`).join('');
+  }
+  galleryPageOne.querySelectorAll('img').forEach((image, index) => {
+    image.alt = localizedAuditions[index]?.title || '';
+  });
+  const localizedGallery = isDesktopViewport ? localizedContent.gallery?.desktop : localizedContent.gallery?.mobile;
+  galleryPageTwo.querySelectorAll('img').forEach((image, index) => {
+    image.alt = localizedGallery?.[index]?.alt || galleryPhotos[index]?.alt || '';
+  });
   const agendaIntro = document.querySelector('[data-content="agenda"] > p:not(.panel-kicker)');
   if (agendaIntro) agendaIntro.textContent = copy.agendaIntro;
   document.querySelector('[data-content="redes"] > p:not(.panel-kicker)').textContent = copy.socialIntro;
@@ -891,11 +939,20 @@ translations.va.auditionsTitle = 'Gravacions';
 const recordingLabels = { es: 'Grabaciones', en: 'Recordings', va: 'Gravacions' };
 const updateRecordingLabels = (language = 'es') => {
   const label = recordingLabels[language] || recordingLabels.es;
+  const itemLabel = language === 'en' ? 'Recording' : language === 'va' ? 'Gravació' : 'Grabación';
   document.querySelector('.auditions-section h3')?.replaceChildren(document.createTextNode(label));
   gallerySection.querySelector('.gallery-heading h3').textContent = galleryPageTwo.hidden ? label : translations[language].galleryTitle;
   gallerySection.querySelector('.gallery-back').textContent = language === 'en' ? '← Back to recordings' : language === 'va' ? '← Tornar a les gravacions' : '← Volver a "Grabaciones"';
   document.querySelector('.auditions-dot')?.setAttribute('aria-label', language === 'en' ? 'Show recordings' : language === 'va' ? 'Mostrar gravacions' : 'Mostrar grabaciones');
-  document.querySelectorAll('#auditions-section .auditions-grid span').forEach((item, index) => { item.textContent = `${language === 'en' ? 'Recording' : language === 'va' ? 'Gravació' : 'Grabación'} ${index + 1}`; });
+  const localizedAuditions = (getLocalizedContent(language).auditions || defaultAuditions).map((item, index) => ({
+    ...item,
+    title: /^(audici[oó]n|gravaci[oó]|recording)\s+\d+$/i.test(item.title || '')
+      ? `${itemLabel} ${index + 1}`
+      : item.title
+  }));
+  document.querySelectorAll('#auditions-section .auditions-grid span').forEach((item, index) => {
+    item.textContent = localizedAuditions[index]?.title || `${label} ${index + 1}`;
+  });
 };
 updateRecordingLabels('es');
 
@@ -912,4 +969,3 @@ document.querySelectorAll('body *').forEach((element) => {
     if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('undefined')) node.textContent = node.textContent.replace(/undefined/gi, '');
   });
 });
-

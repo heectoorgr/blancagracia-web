@@ -41,6 +41,7 @@
   #status.err{color:var(--accent)}
   .char-counter{display:block;font-size:11px;color:var(--muted);margin:-6px 0 10px;text-align:right}
   .char-counter.char-limit-reached{color:var(--accent);font-weight:700}
+  .translation-note{padding:12px 14px;margin:0 0 20px;background:#fff;border-left:3px solid var(--accent);font-size:13px;line-height:1.5}
   @media (max-width: 480px) {
     #panel{padding:16px 14px 90px}
     h2{font-size:13px;margin:28px 0 12px}
@@ -64,6 +65,7 @@
 </div>
 
 <div id="panel">
+  <p class="translation-note">Escribe o modifica los textos en el idioma que prefieras. Los cambios se guardan y se traducen automáticamente a castellano, inglés y valenciano unos segundos después de dejar de escribir; no hace falta pulsar ningún botón. La web puede tardar 1-2 minutos en publicarlos. Los nombres propios y los enlaces se mantienen sin traducir.</p>
   <section id="section-hero">
     <h2>Portada</h2>
     <label>Nombre principal</label>
@@ -170,7 +172,10 @@ function makeRemovable(container, entry) {
   const row = document.createElement('div');
   row.className = 'entry-row';
   row.innerHTML = '<strong></strong><button type="button" class="remove-btn">Eliminar ✕</button>';
-  row.querySelector('.remove-btn').addEventListener('click', () => entry.remove());
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    entry.remove();
+    scheduleAutosave();
+  });
   entry.prepend(row);
 }
 
@@ -232,6 +237,7 @@ function addPhotoEntry(container, currentPath) {
     wrap._pendingImage = { path: finalPath, dataBase64 };
     img.src = URL.createObjectURL(file);
     refreshBioPhotoBadges();
+    scheduleAutosave();
   });
   makeRemovable(null, wrap);
   container.append(wrap);
@@ -308,6 +314,7 @@ function addGalleryEntry(item = {}, container) {
     wrap.dataset.currentPath = finalPath;
     wrap._pendingImage = { path: finalPath, dataBase64 };
     wrap.querySelector('img').src = URL.createObjectURL(file);
+    scheduleAutosave();
   });
   makeRemovable(null, wrap);
   (container || document.getElementById('galleryListMovil')).append(wrap);
@@ -413,6 +420,7 @@ document.querySelectorAll('[data-add]').forEach((button) => {
       const container = document.getElementById(activeGalleryDevice === 'pc' ? 'galleryListPc' : 'galleryListMovil');
       addGalleryEntry({}, container);
     }
+    scheduleAutosave();
   });
 });
 
@@ -434,25 +442,61 @@ document.querySelectorAll('.gallery-device-tab').forEach((tab) => {
   });
 });
 
-document.getElementById('saveBtn').addEventListener('click', async () => {
+let autosaveTimer;
+let saveInProgress = false;
+let saveRequested = false;
+
+function scheduleAutosave() {
   const statusEl = document.getElementById('status');
   statusEl.className = '';
-  statusEl.textContent = 'Guardando...';
-  const { content, images } = collectContent();
+  statusEl.textContent = 'Cambios pendientes; se guardarán y traducirán automáticamente…';
+  window.clearTimeout(autosaveTimer);
+  autosaveTimer = window.setTimeout(() => saveContent(), 1500);
+}
+
+async function saveContent() {
+  if (saveInProgress) {
+    saveRequested = true;
+    return;
+  }
+  saveInProgress = true;
+  const statusEl = document.getElementById('status');
+  statusEl.className = '';
   try {
-    const res = await fetch('/api/save-content', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: ACCESS_CODE, content, images })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Error desconocido');
+    do {
+      saveRequested = false;
+      statusEl.textContent = 'Guardando y traduciendo a los tres idiomas…';
+      const { content, images } = collectContent();
+      const res = await fetch('/api/save-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: ACCESS_CODE, content, images })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      document.querySelectorAll('#bioPhotos .entry, #galleryListMovil .entry, #galleryListPc .entry').forEach((entry) => {
+        if (images.includes(entry._pendingImage)) delete entry._pendingImage;
+      });
+    } while (saveRequested);
     statusEl.className = 'ok';
-    statusEl.textContent = 'Guardado. La web se actualizará en 1-2 minutos.';
+    statusEl.textContent = 'Guardado y traducido a castellano, inglés y valenciano. La web se actualizará en 1-2 minutos.';
   } catch (error) {
     statusEl.className = 'err';
     statusEl.textContent = 'No se pudo guardar: ' + error.message;
+  } finally {
+    saveInProgress = false;
   }
+}
+
+document.getElementById('panel').addEventListener('input', (event) => {
+  if (event.target.matches('input:not([type="file"]), textarea')) scheduleAutosave();
+});
+document.getElementById('panel').addEventListener('change', (event) => {
+  if (event.target.matches('select')) scheduleAutosave();
+});
+document.getElementById('saveBtn').addEventListener('click', () => {
+  window.clearTimeout(autosaveTimer);
+  saveContent();
 });
 
 async function unlock(code) {
