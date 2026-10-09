@@ -1,7 +1,7 @@
 {
   "hero": {
     "name": "Blanca Graciá ",
-    "role": "PRUEBA TEMP ES"
+    "role": "Pianista, Repetidora y Coach Vocal"
   },
   "bio": {
     "paragraphs": [
@@ -132,7 +132,7 @@
   "translations": {
     "en": {
       "hero": {
-        "role": "TEMP TEST EN"
+        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
       },
       "bio": {
         "paragraphs": [
@@ -251,7 +251,7 @@
     },
     "va": {
       "hero": {
-        "role": "PROVA TEMP VA"
+        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
       },
       "bio": {
         "paragraphs": [
