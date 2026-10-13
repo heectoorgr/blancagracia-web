@@ -272,7 +272,7 @@
             "link": "",
             "linkDisplay": "custom",
             "linkText": "",
-            "type": "[Tipo de trabajo]",
+            "type": "Opera",
             "date": "[Fecha o fechas]",
             "place": "[Lugar]",
             "description": "[Descripción del evento]"
