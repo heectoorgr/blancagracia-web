@@ -20,7 +20,7 @@
         "link": "",
         "linkDisplay": "custom",
         "linkText": "",
-        "type": "[Tipo de trabajo]",
+        "type": "Ópera Seria",
         "date": "[Fecha o fechas]",
         "place": "[Lugar]",
         "description": "[Descripción del evento]"
@@ -149,7 +149,7 @@
             "link": "",
             "linkDisplay": "custom",
             "linkText": "",
-            "type": "[Tipo de trabajo]",
+            "type": "Work",
             "date": "[Fecha o fechas]",
             "place": "[Lugar]",
             "description": "[Descripción del evento]"
