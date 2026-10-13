@@ -89,6 +89,10 @@
     {
       "title": "Audición 2",
       "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
+    },
+    {
+      "title": "",
+      "youtubeUrl": ""
     }
   ],
   "gallery": {
@@ -209,6 +213,10 @@
         {
           "title": "Audición 2",
           "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
+        },
+        {
+          "title": "",
+          "youtubeUrl": ""
         }
       ],
       "gallery": {
@@ -328,6 +336,10 @@
         {
           "title": "Audición 2",
           "youtubeUrl": "https://youtu.be/kO8jUgePnX4"
+        },
+        {
+          "title": "",
+          "youtubeUrl": ""
         }
       ],
       "gallery": {
