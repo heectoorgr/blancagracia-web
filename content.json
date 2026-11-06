@@ -1,7 +1,7 @@
 {
   "hero": {
     "name": "Blanca Graciá ",
-    "role": "PRUEBA TEMPORAL EN CASTELLANO"
+    "role": "Pianista, Repetidora y Vocal Coach"
   },
   "bio": {
     "paragraphs": [
@@ -134,7 +134,7 @@
   "translations": {
     "en": {
       "hero": {
-        "role": "TEMPORARY ENGLISH TEST"
+        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
       },
       "bio": {
         "paragraphs": [
@@ -257,7 +257,7 @@
     },
     "va": {
       "hero": {
-        "role": "PROVA TEMPORAL EN VALENCIÀ"
+        "role": "Pianist, Répétiteur, Teacher, Vocal Coach"
       },
       "bio": {
         "paragraphs": [
